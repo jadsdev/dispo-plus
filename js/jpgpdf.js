@@ -297,11 +297,19 @@ function goPrev() {
   });
 
   clearAllBtn.addEventListener("click", () => {
-    if (!images.length) return;
     if (confirm("Remove all added images?")) {
       images = [];
-    saveImages();
-    render();
+  
+      // Clear filename input
+      filenameInput.value = "";
+  
+      // Remove saved filename
+      localStorage.removeItem("jpgpdf_filename");
+  
+      saveImages();
+      render();
+  
+      showToast("Cleared");
     }
   });
 

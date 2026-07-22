@@ -29,7 +29,7 @@
   color: var(--muted);
   text-decoration: none;
   white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease), transform 0.15s var(--ease);
   flex-shrink: 0;
 }
 
@@ -48,6 +48,8 @@
   background: var(--accent-soft);
   color: var(--text);
 }
+
+.tab-item:active { transform: scale(0.96); }
 
 .tab-item.active {
   background: var(--accent);
@@ -105,7 +107,7 @@
   background: var(--surface-alt);
   cursor: pointer;
   text-align: center;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.15s var(--ease);
   margin-bottom: 18px;
 }
 
@@ -113,11 +115,15 @@
 .dropzone:focus-visible {
   border-color: var(--accent);
   outline: none;
+  background: var(--accent-soft);
 }
+
+.dropzone:active { transform: scale(0.995); }
 
 .dropzone.dragover {
   border-color: var(--accent);
   background: var(--accent-soft);
+  transform: scale(1.01);
 }
 
 .dropzone-content {
@@ -130,7 +136,10 @@
   margin-bottom: 8px;
   display: flex;
   justify-content: center;
+  transition: transform 0.2s var(--ease);
 }
+
+.dropzone:hover .dropzone-icon { transform: translateY(-3px); }
 
 .dropzone-icon svg { width: 30px; height: 30px; }
 
@@ -174,10 +183,10 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease), transform 0.15s var(--ease);
 }
 
-.image-card:hover { border-color: var(--border-hover); }
+.image-card:hover { border-color: var(--border-hover); box-shadow: var(--shadow-md); transform: translateY(-2px); }
 
 .image-card .thumb-wrap {
   aspect-ratio: 4 / 3;
@@ -192,7 +201,10 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  transition: transform 0.25s var(--ease);
 }
+
+.image-card:hover img { transform: scale(1.03); }
 
 .image-card .card-body {
   padding: 9px;
@@ -211,10 +223,10 @@
   font-size: 12px;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
-.image-card input.caption-input:focus { border-color: var(--accent); }
+.image-card input.caption-input:focus { border-color: var(--accent); box-shadow: var(--ring); }
 
 .card-actions {
   display: flex;
@@ -238,10 +250,11 @@
   font-size: 13px;
   line-height: 1;
   padding: 0;
-  transition: border-color 0.15s, color 0.15s;
+  transition: border-color 0.15s var(--ease), color 0.15s var(--ease), transform 0.1s var(--ease);
 }
 
 .icon-btn:hover:not(:disabled) { border-color: var(--border-hover); color: var(--text); }
+.icon-btn:active:not(:disabled) { transform: scale(0.9); }
 .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .icon-btn.remove:hover:not(:disabled) { color: var(--red); border-color: var(--red); }

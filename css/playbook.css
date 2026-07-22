@@ -29,7 +29,7 @@
   color: var(--muted);
   text-decoration: none;
   white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease), transform 0.15s var(--ease);
   flex-shrink: 0;
 }
 
@@ -49,6 +49,8 @@
   color: var(--text);
 }
 
+.tab-item:active { transform: scale(0.96); }
+
 .tab-item.active {
   background: var(--accent);
   color: #fff;
@@ -67,11 +69,11 @@
   border-radius: var(--radius-sm);
   padding: 9px 12px;
   gap: 9px;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
 .search-box:hover { border-color: var(--border-hover); }
-.search-box:focus-within { border-color: var(--accent); }
+.search-box:focus-within { border-color: var(--accent); box-shadow: var(--ring); }
 
 .search-icon { font-size: 13px; color: var(--muted); }
 
@@ -106,6 +108,7 @@
   color: var(--text);
   cursor: pointer;
   border-bottom: 1px solid var(--border-soft);
+  transition: background 0.12s var(--ease), color 0.12s var(--ease);
 }
 
 .search-item:hover,
@@ -113,7 +116,7 @@
 .search-item:last-child { border-bottom: none; }
 
 /* =========================
-   FILTER BAR (new)
+   FILTER BAR
 ========================= */
 .filter-bar {
   display: flex;
@@ -134,15 +137,17 @@
   background: var(--inset);
   color: var(--muted);
   cursor: pointer;
-  transition: all .15s ease;
+  transition: all .15s var(--ease);
 }
 
-.filter-chip:hover { border-color: var(--border-hover); color: var(--text); }
+.filter-chip:hover { border-color: var(--border-hover); color: var(--text); transform: translateY(-1px); }
+.filter-chip:active { transform: translateY(0) scale(0.96); }
 
 .filter-chip.active {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .expand-controls {
@@ -161,7 +166,7 @@
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  transition: all .15s ease;
+  transition: all .15s var(--ease);
 }
 
 .expand-controls button:hover {
@@ -169,6 +174,8 @@
   color: var(--text);
   background: var(--accent-soft);
 }
+
+.expand-controls button:active { transform: scale(0.96); }
 
 @media (max-width: 640px) {
   .expand-controls { margin-left: 0; width: 100%; }
@@ -228,11 +235,12 @@
 
   overflow:hidden;
 
-  transition:.18s ease;
+  transition: border-color .18s var(--ease), box-shadow .18s var(--ease), transform .18s var(--ease);
 }
 
 .acc-item:hover {
   border-color:var(--border-hover);
+  box-shadow: var(--shadow-sm);
 }
 
 .acc-item[data-section="standalone"] {
@@ -264,6 +272,8 @@
   border-bottom:1px solid var(--border-soft);
 
   color:var(--text);
+
+  transition: background .15s var(--ease);
 }
 
 .acc-item[data-section="standalone"] .acc-header {
@@ -274,6 +284,14 @@
 .acc-item[data-section="supplemental"] .acc-header {
   background: rgba(42, 143, 214, 0.08);
   color: #1f6fb2;
+}
+
+.acc-item[data-section="standalone"] .acc-header:hover {
+  background: rgba(69, 160, 73, 0.14);
+}
+
+.acc-item[data-section="supplemental"] .acc-header:hover {
+  background: rgba(42, 143, 214, 0.14);
 }
 
 /* Chevron indicator — pure CSS, no HTML change needed per entry */
@@ -287,7 +305,7 @@
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   transform: translateY(-65%) rotate(45deg);
-  transition: transform .2s ease;
+  transition: transform .25s var(--ease-out);
   opacity: .55;
 }
 
@@ -308,7 +326,7 @@
   font-size:12px;
   line-height:1.55;
   color:var(--muted);
-  transition: max-height .3s ease, padding .3s ease;
+  transition: max-height .35s var(--ease), padding .35s var(--ease);
 }
 
 .acc-item:not(.open) .acc-body {
@@ -342,10 +360,12 @@
 .acc-body a {
   color: var(--accent);
   text-decoration: none;
+  transition: color 0.15s var(--ease);
 }
 
 .acc-body a:hover {
   text-decoration: underline;
+  color: var(--accent-strong);
 }
 
 /* ── Click-to-copy Sample Disposition text ── */
@@ -357,7 +377,7 @@
   margin: -1px -4px;
   color: var(--text);
   font-weight: 500;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease);
 }
 
 /* Visible copy affordance — no longer hover-only discovery */
@@ -369,6 +389,7 @@
   opacity: .65;
   margin-right: 5px;
   transform: translateY(-1px);
+  transition: opacity 0.15s var(--ease);
 }
 
 .disposition-text:hover {
@@ -398,7 +419,7 @@
   padding: 3px 8px;
   border-radius: 6px;
   white-space: nowrap;
-  animation: copyFadeIn 0.15s ease-out;
+  animation: copyFadeIn 0.15s var(--ease-out);
 }
 
 @keyframes copyFadeIn {
@@ -424,7 +445,7 @@
   align-items: center;
   justify-content: center;
   z-index: 200;
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.5s var(--ease-out);
 }
 
 .uc-box {
@@ -435,7 +456,7 @@
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md);
   max-width: 340px;
-  animation: floatIn 0.5s ease-out;
+  animation: floatIn 0.5s var(--ease-out);
 }
 
 .uc-icon { font-size: 34px; margin-bottom: 10px; }
@@ -459,10 +480,11 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.15s var(--ease);
 }
 
 .uc-back-btn:hover { border-color: var(--accent); }
+.uc-back-btn:active { transform: scale(0.96); }
 
 /* =========================
    PLAYBOOK VERSION BADGE

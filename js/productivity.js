@@ -259,13 +259,24 @@ function updateStatusStyle(select) {
     "status-rejected"
   );
 
+  const row = select.closest("tr");
+  if (row) {
+    row.classList.remove(
+      "rowStatus-pending",
+      "rowStatus-verified",
+      "rowStatus-resubmit",
+      "rowStatus-escalate",
+      "rowStatus-rejected"
+    );
+  }
+
   const val = select.value;
 
-  if (val === "Verified") select.classList.add("status-verified");
-  else if (val === "Resubmit") select.classList.add("status-resubmit");
-  else if (val === "Escalate") select.classList.add("status-escalate");
-  else if (val === "Rejected") select.classList.add("status-rejected");
-  else select.classList.add("status-inprogress");
+  if (val === "Verified") { select.classList.add("status-verified"); row?.classList.add("rowStatus-verified"); }
+  else if (val === "Resubmit") { select.classList.add("status-resubmit"); row?.classList.add("rowStatus-resubmit"); }
+  else if (val === "Escalate") { select.classList.add("status-escalate"); row?.classList.add("rowStatus-escalate"); }
+  else if (val === "Rejected") { select.classList.add("status-rejected"); row?.classList.add("rowStatus-rejected"); }
+  else { select.classList.add("status-inprogress"); row?.classList.add("rowStatus-pending"); }
 }
 
 function updateShiftUI() {
@@ -314,14 +325,10 @@ function refreshStartButtons() {
     const isFinalized = row.dataset.finalized === "true";
     const isActive = activeCaseRow === row;
 
-    // ─────────────────────────
-    // 1. FINALIZED ROW (locked forever)
-    // ─────────────────────────
     if (isFinalized) {
       startBtn.disabled = true;
       stopBtn.disabled = true;
     
-      // 🔒 ensure everything stays locked
       row.querySelectorAll("input, select").forEach(el => {
         el.disabled = true;
       });
@@ -329,28 +336,18 @@ function refreshStartButtons() {
       return;
     }
 
-    // ─────────────────────────
-    // 2. ACTIVE ROW (currently running case)
-    // ─────────────────────────
     if (isActive) {
       startBtn.disabled = true;
       stopBtn.disabled = false;
       return;
     }
 
-    // ─────────────────────────
-    // 3. SOME OTHER CASE IS ACTIVE
-    // (lock start for all other rows)
-    // ─────────────────────────
     if (activeCaseRow) {
       startBtn.disabled = true;
       stopBtn.disabled = false;
       return;
     }
 
-    // ─────────────────────────
-    // 4. NO ACTIVE CASE (idle state)
-    // ─────────────────────────
     startBtn.disabled = false;
     stopBtn.disabled = false;
 
@@ -368,15 +365,14 @@ function saveToHistory(row, sec) {
   const dateKey = getDublinDate();
 
   if (!history[dateKey]) {
-    history[dateKey] = { cases: [] };          // ← was []
+    history[dateKey] = { cases: [] };
   }
 
-  // guard: if somehow stored as bare array, upgrade it
   if (Array.isArray(history[dateKey])) {
     history[dateKey] = { cases: history[dateKey] };
   }
 
-  history[dateKey].cases.push({               // ← was .push directly
+  history[dateKey].cases.push({
     uid: row.querySelector(".uidInput")?.value || "",
     status: row.querySelector(".statusSelect")?.value || "",
     location: row.querySelector(".locationSelect")?.value || "",
@@ -388,6 +384,7 @@ function saveToHistory(row, sec) {
 
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   renderHistory();
+  renderDashboard();
 }
 
 function lockRow(row) {
@@ -407,7 +404,6 @@ function applyRowLock(row) {
   const stopBtn = row.querySelector(".stopBtn");
   const deleteBtn = row.querySelector(".deleteBtn");
 
-  // HARD LOCK
   startBtn.disabled = true;
   stopBtn.disabled = true;
 
@@ -416,12 +412,10 @@ function applyRowLock(row) {
 
   row.classList.add("finished-row");
 
-  // 🔒 disable ALL inputs inside row (except delete button)
   row.querySelectorAll("input, select").forEach(el => {
     el.disabled = true;
   });
 
-  // re-enable ONLY delete button
   deleteBtn.disabled = false;
 }
 
@@ -433,9 +427,13 @@ function addRow(save = true) {
   const row = document.createElement("tr");
 
   row.innerHTML = `
-    <td><input class="input uidInput" placeholder="UID"></td>
+    <td class="fieldCell uidCell">
+      <label class="fieldLabel">UID</label>
+      <input class="input uidInput" placeholder="UID">
+    </td>
 
-    <td>
+    <td class="fieldCell statusCell">
+      <label class="fieldLabel">Status</label>
       <select class="statusSelect">
         <option>Pending</option>
         <option>Verified</option>
@@ -445,7 +443,8 @@ function addRow(save = true) {
       </select>
     </td>
 
-    <td>
+    <td class="fieldCell locationCell">
+      <label class="fieldLabel">Location</label>
       <select class="locationSelect">
         <option>ROW</option>
         <option>EU</option>
@@ -454,16 +453,33 @@ function addRow(save = true) {
       </select>
     </td>
 
-    <td><input class="input issuingInput" placeholder="Issuing"></td>
-    <td><input class="input hitsInput" type="text" placeholder="0" min="0"></td>
+    <td class="fieldCell issuingCell">
+      <label class="fieldLabel">Issuing</label>
+      <input class="input issuingInput" placeholder="Issuing">
+    </td>
 
-    <td><input class="startCell startInput" placeholder="--:--:--" readonly></td>
-    <td class="endCell">--:--:--</td>
+    <td class="fieldCell hitsCell">
+      <label class="fieldLabel">Hits</label>
+      <input class="hitsInput" type="text" placeholder="0" min="0">
+    </td>
 
-    <td>
-      <button class="startBtn">Start</button>
-      <button class="stopBtn">End</button>
-      <button class="deleteBtn">✕</button>
+    <td class="fieldCell startTimeCell">
+      <label class="fieldLabel">Start Time</label>
+      <input class="startCell startInput" placeholder="--:--:--" readonly>
+    </td>
+
+    <td class="fieldCell endTimeCell">
+      <label class="fieldLabel">End Time</label>
+      <span class="endCell">--:--:--</span>
+    </td>
+
+    <td class="fieldCell actionsCell">
+      <label class="fieldLabel">&nbsp;</label>
+      <div class="actionBtns">
+        <button class="startBtn" title="Start">▶</button>
+        <button class="stopBtn" title="End">■</button>
+        <button class="deleteBtn" title="Delete">✕</button>
+      </div>
     </td>
   `;
 
@@ -537,7 +553,6 @@ editor.type = "text";
 editor.value = current;
 editor.className = "startEditOverlay";
 
-// Use fixed positioning based on td's screen position
 const rect = td.getBoundingClientRect();
 editor.style.position = "fixed";
 editor.style.top = rect.top + "px";
@@ -559,7 +574,6 @@ document.body.appendChild(editor);
       const val = editor.value.trim();
       if (!val || val === current) return;
   
-      // Accept either "132458" (6 digits) or "13:24:58"
     let normalized = val.replace(/:/g, "");
     if (!/^\d{6}$/.test(normalized)) {
       showToast("Enter 6 digits e.g. 132458 or 13:24:58", "error");
@@ -575,10 +589,8 @@ document.body.appendChild(editor);
       return;
     }
 
-    // Normalize display to HH:MM:SS
     const formattedVal = `${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
   
-      // Reliable Dublin → UTC conversion using Intl
       const now = new Date();
       const fmt = new Intl.DateTimeFormat("en-CA", {
         timeZone: "Europe/Dublin",
@@ -589,24 +601,18 @@ document.body.appendChild(editor);
       const p = {};
       fmt.formatToParts(now).forEach(({ type, value }) => p[type] = value);
   
-      // Dublin "now" as fake-UTC ms
       const dublinNowFake = new Date(`${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}Z`).getTime();
-      // Target time as fake-UTC ms (same date)
       const targetFake = new Date(
         `${p.year}-${p.month}-${p.day}T${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}Z`
       ).getTime();
-      // Real offset = actual UTC - Dublin fake UTC
       const offsetMs = now.getTime() - dublinNowFake;
-      // Real UTC timestamp for the entered Dublin time
       const newTimestamp = targetFake + offsetMs;
   
       if (isNaN(newTimestamp)) { showToast("Invalid time", "error"); return; }
   
-      // Apply new start
       startInput.value = formattedVal;
       row.dataset.startTimestamp = newTimestamp;
   
-      // If case still running — restart timer from new start
       if (activeCaseRow === row) {
         const elapsed = Math.floor((Date.now() - newTimestamp) / 1000);
         row.dataset.liveSeconds = elapsed;
@@ -615,7 +621,6 @@ document.body.appendChild(editor);
         document.getElementById("activeCaseTime").textContent = formatTime(elapsed);
       }
   
-      // If finalized — recalc duration against end time
       if (row.dataset.finalized === "true") {
         const endText = row.querySelector(".endCell").textContent.trim();
         if (endText && endText !== "--:--:--") {
@@ -668,17 +673,15 @@ startInput.addEventListener("blur", () => {
   recalcFromStartInput(row);
 });
 
-// initial color
 updateStatusStyle(status);
 
-// change color on update
 status.addEventListener("change", () => {
   updateStatusStyle(status);
   saveState();
 });
 
 row.querySelector(".startBtn").onclick = () => {
-  if (row.dataset.finalized === "true") return; // 🔒 BLOCK FINISHED
+  if (row.dataset.finalized === "true") return;
 
   if (activeCaseRow && activeCaseRow !== row) return;
 
@@ -717,13 +720,11 @@ row.querySelector(".stopBtn").onclick = () => {
   const start = Number(row.dataset.startTimestamp);
   if (!start) return;
 
-  // ✅ Open modal FIRST — don't stop anything yet
   openStatusModal((status) => {
-    if (!status) return; // cancelled — case keeps running, nothing changes
+    if (!status) return;
 
     const end = Date.now();
 
-    // ✅ Only stop timer and finalize AFTER status is chosen
     stopInterval(row);
     activeTimers.delete(row);
 
@@ -782,7 +783,6 @@ issuingInput.addEventListener("input", (e) => {
   e.target.setSelectionRange(cursorPos, cursorPos);
 });
 
-  // ✅ Auto-save when any input changes
   row.querySelectorAll(".uidInput, .statusSelect, .locationSelect, .issuingInput, .hitsInput")
     .forEach(el => el.addEventListener("change", saveState));
 }
@@ -792,12 +792,11 @@ function startCase(row) {
 
   row.classList.add("activeRow");
 
-  // disable start button immediately
   row.querySelector(".startBtn").disabled = true;
 }
 
 function finishCase(row) {
-  row.classList.add("locked-row");   // 🔒 permanent lock
+  row.classList.add("locked-row");
 
   row.querySelector(".startBtn").disabled = true;
   row.querySelector(".stopBtn").disabled = true;
@@ -826,12 +825,11 @@ function startLiveTimer(row) {
     updateTotals();
   };
 
-  startTick(); // 🔥 immediate update (removes delay feel)
+  startTick();
 
 const id = setInterval(startTick, 1000);
 activeIntervals.set(row, id);
 
-  // 🔥 IMPORTANT: update instantly (prevents 0:00 flash)
   const initial = Math.floor((Date.now() - start) / 1000);
 
   if (row === activeCaseRow) {
@@ -849,7 +847,6 @@ function stopInterval(row) {
 
   activeCaseSeconds = 0;
 
-  // ❌ DO NOT reset UI here during restore
   if (!row) return;
 }
 
@@ -896,16 +893,12 @@ function recalcFromStartInput(row) {
     return;
   }
 
-  // Get Dublin's current UTC offset dynamically
   const now = new Date();
 
-// Get today's date string in Dublin time (YYYY-MM-DD)
 const today = now.toLocaleDateString("en-CA", { timeZone: "Europe/Dublin" });
 
-// Build a date string and parse it as Dublin local time using Intl
 const dublinDateStr = `${today}T${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
 
-// Use Intl to find what UTC time corresponds to this Dublin local time
 const formatter = new Intl.DateTimeFormat("en-CA", {
   timeZone: "Europe/Dublin",
   year: "numeric", month: "2-digit", day: "2-digit",
@@ -913,14 +906,13 @@ const formatter = new Intl.DateTimeFormat("en-CA", {
   hour12: false
 });
 
-// Get current Dublin time parts to calculate offset
 const parts = formatter.formatToParts(now);
 const p = {};
 parts.forEach(({ type, value }) => p[type] = value);
 
 const dublinNowStr = `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}`;
-const dublinNowMs = new Date(dublinNowStr).getTime(); // treat as UTC to get the number
-const offsetMs = now.getTime() - dublinNowMs; // actual offset: UTC - Dublin_local
+const dublinNowMs = new Date(dublinNowStr).getTime();
+const offsetMs = now.getTime() - dublinNowMs;
 
 const newTimestamp = new Date(dublinDateStr).getTime() + offsetMs;
 
@@ -931,14 +923,12 @@ if (isNaN(newTimestamp)) {
 
   row.dataset.startTimestamp = newTimestamp;
 
-  // Still running — update live elapsed
   if (activeCaseRow === row) {
     const elapsed = Math.floor((Date.now() - newTimestamp) / 1000);
     row.dataset.liveSeconds = elapsed;
     document.getElementById("activeCaseTime").textContent = formatTime(elapsed);
   }
 
-  // Finalized — recalc duration against stored end time
   if (row.dataset.finalized === "true") {
     const endText = row.querySelector(".endCell").textContent.trim();
     if (endText && endText !== "--:--:--") {
@@ -977,18 +967,14 @@ function updateTotals() {
     }
   });
 
-  // ✅ Live case: add its elapsed time to the running total for Utilization,
-  // and count it into the AHT average so AHT updates live too
   let liveTime = 0;
 let caseCountForAht = completedCases;
 
-// 🔥 include active case in ALL footer metrics
 if (activeCaseRow) {
   liveTime = Number(activeCaseRow.dataset.liveSeconds || 0);
   caseCountForAht += 1;
 }
 
-// TOTAL FOOTER VALUES
 const totalForUtil = total + liveTime;
 const totalForAht = total + liveTime;
 
@@ -1030,7 +1016,6 @@ function updateLiveStatus() {
     document.getElementById("activeCaseUid").textContent = "—";
   }
 
-  // 🔥 FIX MINI SESSION UI HERE (THIS WAS MISSING CONSISTENCY)
   const session = document.querySelector(".activeSessionMini");
   if (session) {
     if (shiftActive) {
@@ -1042,7 +1027,7 @@ function updateLiveStatus() {
 }
 
 /* =========================
-   VISIBILITY CHANGE — re-sync timer when tab regains focus
+   VISIBILITY CHANGE
 ========================= */
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") {
@@ -1085,7 +1070,6 @@ function clearAllCases() {
     return;
   }
 
-  // ── WARNING STATE ──
   const confirmClear = confirm(
     "⚠ Warning: This will permanently clear all cases.\n\nDo you want to continue?"
   );
@@ -1095,7 +1079,6 @@ function clearAllCases() {
     return;
   }
 
-  // ── CLEAR ACTION ──
   rows.innerHTML = "";
 
   document.getElementById("cases").textContent = "0";
@@ -1139,7 +1122,6 @@ function renderHistory() {
     return;
   }
 
-  // ── PAGINATION ──
   const start = (historyPage - 1) * HISTORY_PAGE_SIZE;
   const end = start + HISTORY_PAGE_SIZE;
   const pagedDates = dates.slice(start, end);
@@ -1153,7 +1135,6 @@ function renderHistory() {
     const day = history[dateKey];
     let cases = day.cases || [];
 
-    // ── UID FILTER ──
     const searchLower = search.toLowerCase();
 
     if (searchLower) {
@@ -1167,7 +1148,6 @@ if (searchLower) {
     const location = (c.location || "").toLowerCase();
     const issuing = (c.issuing || "").toLowerCase();
 
-    // SHIFT DATE SEARCH (key upgrade)
     const dateMatch = dateKey.toLowerCase().includes(searchLower);
 
     return (
@@ -1263,30 +1243,593 @@ function clearAllHistory() {
     return;
   }
 
-  // Clear storage
   localStorage.removeItem(HISTORY_KEY);
 
-  // Clear UI
   const container = document.getElementById("historyList");
   if (container) container.innerHTML = "";
 
-  // Reset chart if exists
-  if (dailyChart) {
+  if (typeof dailyChart !== "undefined" && dailyChart) {
     dailyChart.destroy();
     dailyChart = null;
   }
 
+  renderDashboard();
+
   showToast("All history cleared", "success");
 }
 
+/* =========================
+   DASHBOARD (month/week filter)
+========================= */
+let dashMode = "month";
 
+function getHistoryData() {
+  return JSON.parse(localStorage.getItem(HISTORY_KEY)) || {};
+}
+
+function parseDateKey(key) {
+  return new Date(key + "T00:00:00Z");
+}
+
+function getMonthKey(dateKey) {
+  return dateKey.slice(0, 7);
+}
+
+function monthLabel(monthKey) {
+  const [y, m] = monthKey.split("-").map(Number);
+  const d = new Date(Date.UTC(y, m - 1, 1));
+  return d.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+}
+
+function getWeekInfo(dateObj) {
+  const day = dateObj.getUTCDay();
+  const diffToMonday = (day === 0 ? -6 : 1 - day);
+
+  const monday = new Date(dateObj);
+  monday.setUTCDate(dateObj.getUTCDate() + diffToMonday);
+
+  const sunday = new Date(monday);
+  sunday.setUTCDate(monday.getUTCDate() + 6);
+
+  return { key: monday.toISOString().slice(0, 10), monday, sunday };
+}
+
+function fmtShortDate(d) {
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+}
+
+function weekLabel(monday, sunday) {
+  return `${fmtShortDate(monday)} – ${fmtShortDate(sunday)}`;
+}
+
+function buildDashPeriods(mode) {
+  const history = getHistoryData();
+  const dateKeys = Object.keys(history)
+    .filter(dk => (history[dk].cases || []).length > 0)
+    .sort()
+    .reverse();
+
+  const seen = new Map();
+
+  dateKeys.forEach(dk => {
+    if (mode === "month") {
+      const mk = getMonthKey(dk);
+      if (!seen.has(mk)) seen.set(mk, monthLabel(mk));
+    } else {
+      const { key, monday, sunday } = getWeekInfo(parseDateKey(dk));
+      if (!seen.has(key)) seen.set(key, weekLabel(monday, sunday));
+    }
+  });
+
+  return Array.from(seen.entries()).map(([key, label]) => ({ key, label }));
+}
+
+function computeDashStats(mode, periodKey) {
+  const history = getHistoryData();
+  const SHIFT_SECONDS = 8 * 60 * 60;
+
+  let totalCases = 0, totalHits = 0, totalTime = 0, daysCount = 0;
+
+  Object.keys(history).forEach(dk => {
+    const cases = history[dk].cases || [];
+    if (cases.length === 0) return;
+
+    const matches = mode === "month"
+      ? getMonthKey(dk) === periodKey
+      : getWeekInfo(parseDateKey(dk)).key === periodKey;
+
+    if (!matches) return;
+
+    daysCount++;
+    cases.forEach(c => {
+      totalCases++;
+      totalHits += Number(c.hits || 0);
+      totalTime += Number(c.time || 0);
+    });
+  });
+
+  const aht = totalCases ? Math.floor(totalTime / totalCases) : 0;
+  const util = daysCount ? (totalTime / (daysCount * SHIFT_SECONDS)) * 100 : 0;
+
+  return { totalCases, totalHits, totalTime, aht, util };
+}
+
+function updateDashStats(periodKey) {
+  const els = {
+    cases: document.getElementById("dashCases"),
+    hits: document.getElementById("dashHits"),
+    time: document.getElementById("dashTime"),
+    aht: document.getElementById("dashAht"),
+    util: document.getElementById("dashUtil"),
+    utilBar: document.getElementById("utilBarFill")
+  };
+  if (!els.cases) return;
+
+  if (!periodKey) {
+    els.cases.textContent = "0";
+    els.hits.textContent = "0";
+    els.time.textContent = "0:00:00";
+    els.aht.textContent = "0:00:00";
+    els.util.textContent = "0.00%";
+    if (els.utilBar) els.utilBar.style.width = "0%";
+    return;
+  }
+
+  const stats = computeDashStats(dashMode, periodKey);
+  els.cases.textContent = stats.totalCases;
+  els.hits.textContent = stats.totalHits;
+  els.time.textContent = formatTime(stats.totalTime);
+  els.aht.textContent = formatTime(stats.aht);
+  els.util.textContent = stats.util.toFixed(2) + "%";
+  if (els.utilBar) els.utilBar.style.width = Math.min(100, stats.util) + "%";
+}
+
+function renderDashboard() {
+  const select = document.getElementById("dashPeriodSelect");
+  if (!select) return;
+
+  document.querySelectorAll(".dashModeBtn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.mode === dashMode);
+  });
+
+  const prevValue = select.value;
+  const periods = buildDashPeriods(dashMode);
+
+  select.innerHTML = "";
+
+  if (periods.length === 0) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "No data yet";
+    select.appendChild(opt);
+    updateDashStats(null);
+    return;
+  }
+
+  periods.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.key;
+    opt.textContent = p.label;
+    select.appendChild(opt);
+  });
+
+  select.value = periods.some(p => p.key === prevValue) ? prevValue : periods[0].key;
+  updateDashStats(select.value);
+}
+
+function setDashMode(mode) {
+  dashMode = mode;
+  renderDashboard();
+}
+
+function onDashPeriodChange() {
+  const select = document.getElementById("dashPeriodSelect");
+  updateDashStats(select ? select.value : null);
+}
+
+/* =========================
+   BACKUP FOLDER
+========================= */
+const BACKUP_DB_NAME = "dispoBackupDB";
+const BACKUP_STORE_NAME = "handles";
+const BACKUP_DIR_KEY = "backupDir";
+
+function openBackupDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(BACKUP_DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(BACKUP_STORE_NAME);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function saveBackupDirHandle(handle) {
+  const db = await openBackupDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(BACKUP_STORE_NAME, "readwrite");
+    tx.objectStore(BACKUP_STORE_NAME).put(handle, BACKUP_DIR_KEY);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getSavedBackupDirHandle() {
+  const db = await openBackupDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(BACKUP_STORE_NAME, "readonly");
+    const req = tx.objectStore(BACKUP_STORE_NAME).get(BACKUP_DIR_KEY);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function ensureBackupDirPermission(handle) {
+  const opts = { mode: "readwrite" };
+  try {
+    if ((await handle.queryPermission(opts)) === "granted") return true;
+    if ((await handle.requestPermission(opts)) === "granted") return true;
+  } catch (err) {}
+  return false;
+}
+
+async function chooseBackupFolder() {
+  if (!window.showDirectoryPicker) {
+    showToast("Folder picker isn't supported in this browser — use Chrome or Edge", "error");
+    return null;
+  }
+
+  try {
+    const handle = await window.showDirectoryPicker();
+    await saveBackupDirHandle(handle);
+    showToast(`Backup folder set: ${handle.name}`, "success");
+    return handle;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function getBackupFolder(promptIfMissing) {
+  if (!window.showDirectoryPicker) return null;
+
+  const saved = await getSavedBackupDirHandle().catch(() => null);
+  if (saved && (await ensureBackupDirPermission(saved))) return saved;
+
+  if (!promptIfMissing) return null;
+  return await chooseBackupFolder();
+}
+
+function downloadJSON(json, filename) {
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(url);
+  showToast("Backup downloaded", "success");
+}
+
+/* =========================
+   BACKUP — export / import
+========================= */
+async function exportBackup() {
+  const data = {
+    exportedAt: new Date().toISOString(),
+    productivityState: localStorage.getItem(STORAGE_KEY),
+    productivityHistory: localStorage.getItem(HISTORY_KEY),
+    shiftStartTime: localStorage.getItem("shiftStartTime_v2")
+  };
+
+  const json = JSON.stringify(data, null, 2);
+  const filename = `dispo-productivity-backup-${new Date().toISOString().slice(0, 10)}.json`;
+
+  const dirHandle = await getBackupFolder(true);
+
+  if (dirHandle) {
+    try {
+      const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(json);
+      await writable.close();
+      showToast(`Backup saved to "${dirHandle.name}": ${filename}`, "success");
+      return;
+    } catch (err) {
+      console.error(err);
+      showToast("Couldn't save to folder — downloading instead", "error");
+    }
+  }
+
+  downloadJSON(json, filename);
+}
+
+function triggerImportBackup() {
+  document.getElementById("importBackupInput").click();
+}
+
+function importBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    let data;
+    try {
+      data = JSON.parse(e.target.result);
+    } catch (err) {
+      showToast("Invalid backup file", "error");
+      return;
+    }
+
+    if (!data.productivityState && !data.productivityHistory) {
+      showToast("Backup file has no recognizable data", "error");
+      return;
+    }
+
+    const confirmImport = confirm(
+      "⚠ This will overwrite your current cases, history, and shift state with this backup.\n\nContinue?"
+    );
+    if (!confirmImport) {
+      showToast("Import cancelled", "error");
+      return;
+    }
+
+    if (data.productivityState) {
+      localStorage.setItem(STORAGE_KEY, data.productivityState);
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+
+    if (data.productivityHistory) {
+      localStorage.setItem(HISTORY_KEY, data.productivityHistory);
+    }
+
+    if (data.shiftStartTime) {
+      localStorage.setItem("shiftStartTime_v2", data.shiftStartTime);
+    } else {
+      localStorage.removeItem("shiftStartTime_v2");
+    }
+
+    showToast("Backup restored — reloading...", "success");
+    setTimeout(() => location.reload(), 900);
+  };
+
+  reader.onerror = () => showToast("Could not read backup file", "error");
+  reader.readAsText(file);
+
+  event.target.value = "";
+}
+
+function escapeHtml(str) {
+  return String(str ?? "").replace(/[&<>"']/g, (m) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[m]));
+}
+
+/* =========================
+   PRINT — all cases for the currently selected week/month
+========================= */
+function printSelectedPeriod() {
+  const select = document.getElementById("dashPeriodSelect");
+  if (!select || !select.value) {
+    showToast("No data to print for this period", "error");
+    return;
+  }
+
+  const periodKey = select.value;
+  const periodLabel = select.options[select.selectedIndex].textContent;
+  const history = getHistoryData();
+
+  const dateKeys = Object.keys(history).sort();
+  const rowsHtml = [];
+  let totalCases = 0, totalHits = 0, totalTime = 0;
+
+  dateKeys.forEach(dk => {
+    const cases = history[dk].cases || [];
+    if (cases.length === 0) return;
+
+    const matches = dashMode === "month"
+      ? getMonthKey(dk) === periodKey
+      : getWeekInfo(parseDateKey(dk)).key === periodKey;
+
+    if (!matches) return;
+
+    cases.forEach(c => {
+      totalCases++;
+      totalHits += Number(c.hits || 0);
+      totalTime += Number(c.time || 0);
+
+      rowsHtml.push(`
+        <tr>
+          <td>${dk}</td>
+          <td>${escapeHtml(c.uid)}</td>
+          <td>${escapeHtml(c.status)}</td>
+          <td>${escapeHtml(c.location)}</td>
+          <td>${escapeHtml(c.issuing)}</td>
+          <td>${c.hits}</td>
+          <td>${formatTime(c.time)}</td>
+        </tr>
+      `);
+    });
+  });
+
+  if (rowsHtml.length === 0) {
+    showToast("No cases found for this period", "error");
+    return;
+  }
+
+  const aht = totalCases ? Math.floor(totalTime / totalCases) : 0;
+
+  const printArea = document.getElementById("printArea");
+  printArea.innerHTML = `
+    <h2>dispo+ Productivity Report</h2>
+    <p>
+      Period: ${escapeHtml(periodLabel)} (${dashMode === "month" ? "Monthly" : "Weekly"}) &nbsp;·&nbsp;
+      Total Cases: ${totalCases} &nbsp;·&nbsp;
+      Total Hits: ${totalHits} &nbsp;·&nbsp;
+      Total Time: ${formatTime(totalTime)} &nbsp;·&nbsp;
+      AHT: ${formatTime(aht)}
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th><th>UID</th><th>Status</th><th>Location</th><th>Issuing</th><th>Hits</th><th>Time</th>
+        </tr>
+      </thead>
+      <tbody>${rowsHtml.join("")}</tbody>
+    </table>
+  `;
+
+  window.print();
+}
+
+/* =========================
+   AUTOSAVE — continuous background protection
+   Every 10s: rotating localStorage snapshot of the live case queue +
+   shift state (survives even if STORAGE_KEY itself gets cleared).
+   Every 60s: if a backup folder is set, silently overwrites one fixed
+   file there too — no prompts.
+   On load: if live data is missing but a recent autosave exists,
+   shows a recovery banner offering one-click restore.
+========================= */
+const AUTOSNAP_KEY = "dispo_productivity_autosnap";
+const AUTOSNAP_MAX = 8;
+const AUTOSNAP_INTERVAL_MS = 10000;
+const AUTOSNAP_FOLDER_INTERVAL_MS = 60000;
+
+let lastAutosnapSignature = "";
+
+function currentSessionPayload() {
+  return {
+    savedAt: new Date().toISOString(),
+    productivityState: localStorage.getItem(STORAGE_KEY),
+    shiftStartTime: localStorage.getItem("shiftStartTime_v2")
+  };
+}
+
+function takeAutoSnapshot() {
+  const payload = currentSessionPayload();
+  const signature = payload.productivityState + "|" + payload.shiftStartTime;
+
+  if (signature === lastAutosnapSignature) return;
+  lastAutosnapSignature = signature;
+
+  if (!payload.productivityState) return;
+
+  let snaps = [];
+  try {
+    snaps = JSON.parse(localStorage.getItem(AUTOSNAP_KEY)) || [];
+  } catch (e) {
+    snaps = [];
+  }
+
+  snaps.unshift(payload);
+  if (snaps.length > AUTOSNAP_MAX) snaps = snaps.slice(0, AUTOSNAP_MAX);
+
+  try {
+    localStorage.setItem(AUTOSNAP_KEY, JSON.stringify(snaps));
+    updateAutosaveIndicator(payload.savedAt);
+  } catch (e) {
+    console.error("dispo+ autosave failed:", e);
+  }
+}
+
+async function writeAutoSnapshotToFolder() {
+  const dirHandle = await getBackupFolder(false);
+  if (!dirHandle) return;
+
+  const payload = currentSessionPayload();
+  if (!payload.productivityState) return;
+
+  try {
+    const fileHandle = await dirHandle.getFileHandle("dispo-productivity-autosave.json", { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(JSON.stringify(payload, null, 2));
+    await writable.close();
+  } catch (err) {
+    console.error("dispo+ folder autosave failed:", err);
+  }
+}
+
+function updateAutosaveIndicator(isoTime) {
+  const el = document.getElementById("autosaveStatus");
+  if (!el) return;
+  const t = new Date(isoTime);
+  el.textContent = `Autosaved ${t.toLocaleTimeString()}`;
+}
+
+function restoreLastAutosave() {
+  let snaps = [];
+  try {
+    snaps = JSON.parse(localStorage.getItem(AUTOSNAP_KEY)) || [];
+  } catch (e) {
+    snaps = [];
+  }
+
+  if (snaps.length === 0) {
+    showToast("No autosave available", "error");
+    return;
+  }
+
+  const latest = snaps[0];
+  const confirmRestore = confirm(
+    `Restore autosave from ${new Date(latest.savedAt).toLocaleString()}?\n\nThis will replace your current case queue and shift state.`
+  );
+  if (!confirmRestore) return;
+
+  if (latest.productivityState) {
+    localStorage.setItem(STORAGE_KEY, latest.productivityState);
+  }
+  if (latest.shiftStartTime) {
+    localStorage.setItem("shiftStartTime_v2", latest.shiftStartTime);
+  } else {
+    localStorage.removeItem("shiftStartTime_v2");
+  }
+
+  showToast("Autosave restored — reloading...", "success");
+  setTimeout(() => location.reload(), 700);
+}
+
+function dismissRecoveryBanner() {
+  const banner = document.getElementById("recoveryBanner");
+  if (banner) banner.style.display = "none";
+}
+
+function checkForMissingDataOnLoad() {
+  const liveState = localStorage.getItem(STORAGE_KEY);
+  if (liveState) return;
+
+  let snaps = [];
+  try {
+    snaps = JSON.parse(localStorage.getItem(AUTOSNAP_KEY)) || [];
+  } catch (e) {
+    snaps = [];
+  }
+  if (snaps.length === 0) return;
+
+  const latest = snaps[0];
+  const banner = document.getElementById("recoveryBanner");
+  const msg = document.getElementById("recoveryBannerMsg");
+  if (banner && msg) {
+    msg.textContent = `Your current case data looks empty, but an autosave from ${new Date(latest.savedAt).toLocaleString()} is available.`;
+    banner.style.display = "flex";
+  }
+}
+
+function initAutoSave() {
+  takeAutoSnapshot();
+  checkForMissingDataOnLoad();
+  setInterval(takeAutoSnapshot, AUTOSNAP_INTERVAL_MS);
+  setInterval(writeAutoSnapshotToFolder, AUTOSNAP_FOLDER_INTERVAL_MS);
+}
 
 /* =========================
    INIT
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
 
-   // ✅ restore shift
    const savedShift = localStorage.getItem("shiftStartTime_v2");
    if (savedShift) {
      shiftStartTime = Number(savedShift);
@@ -1301,7 +1844,9 @@ document.querySelectorAll(".navbar a").forEach(a => {
 
 loadState();
 updateShiftUI();
-updateLiveStatus();   // 🔥 ADD THIS
+updateLiveStatus();
 renderHistory();
+renderDashboard();
+initAutoSave();
 setInterval(saveState, 1000);
 });

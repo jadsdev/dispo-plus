@@ -553,6 +553,11 @@ function generate() {
   const out        = document.getElementById("output");
   const minorAlert = document.getElementById("minorAlert");
   const copyHint   = document.getElementById("copyHint");
+  const copyNote = document.getElementById("copyNote");
+if (copyNote) {
+  copyNote.style.display = "none";
+  copyNote.innerHTML = "";
+}
 
   const dobVal       = document.getElementById("dob").value.trim();
   const givenInput   = document.getElementById("given");
@@ -660,7 +665,22 @@ function generate() {
     const fillerKey = normalizeFillerValue(d);
 
     if (fillerKey === "COMMON NAME") {
-      dispositionText.push(buildCommonNameText({ givenVal, middleVal, surnameVal, countryVal, countryKey }));
+      let commonNameText = buildCommonNameText({ givenVal, middleVal, surnameVal, countryVal, countryKey });
+
+      // Common Name alone is never enough to close a hit — flag it
+      // when it's the only filler selected (and it actually generated,
+      // i.e. it's not already an ERR() message).
+      if (selectedFillerKeys.length === 1 && !commonNameText.includes("ERROR:")) {
+        const note = document.getElementById("copyNote");
+        if (note) {
+          note.innerHTML =
+            `Note: Common Name alone is not sufficient to dispose of this hit — ` +
+            `an additional disposition factor is required.`;
+          note.style.display = "block";
+        }
+      }
+
+      dispositionText.push(commonNameText);
     }
 
     if (fillerKey === "JUVENILE") {
@@ -957,3 +977,96 @@ setTimeout(() => {
   };
   
   refreshDetailsSidebar();
+
+/* =============================================
+   FLOATING NOTEPAD
+   - autosaves as you type
+   - saves on close (button or outside click)
+   - saves on tab close / navigation
+   ============================================= */
+(function initNotepad() {
+  const NOTEPAD_KEY      = "dispoNotepadContent";
+  const NOTEPAD_SIZE_KEY = "dispoNotepadSize";
+
+  const fab      = document.getElementById("notepadToggle");
+  const panel    = document.getElementById("notepadPanel");
+  const closeBtn = document.getElementById("notepadClose");
+  const textarea = document.getElementById("notepadText");
+
+  if (!fab || !panel || !textarea) return;
+
+  // restore saved content on load
+  textarea.value = localStorage.getItem(NOTEPAD_KEY) || "";
+
+  // restore saved size (from CSS `resize: both` drag) on load
+  try {
+    const savedSize = JSON.parse(localStorage.getItem(NOTEPAD_SIZE_KEY));
+    if (savedSize && savedSize.width && savedSize.height) {
+      panel.style.width  = savedSize.width;
+      panel.style.height = savedSize.height;
+    }
+  } catch (e) { /* ignore malformed saved size */ }
+
+  function persist() {
+    localStorage.setItem(NOTEPAD_KEY, textarea.value);
+  }
+
+  function persistSize() {
+    // only store while it actually has a rendered size (panel must be open)
+    if (!panel.classList.contains("open")) return;
+    const rect = panel.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    localStorage.setItem(NOTEPAD_SIZE_KEY, JSON.stringify({
+      width:  rect.width  + "px",
+      height: rect.height + "px"
+    }));
+  }
+
+  // track manual resize-handle drags (CSS `resize: both`)
+  if (typeof ResizeObserver !== "undefined") {
+    const resizeObserver = new ResizeObserver(() => persistSize());
+    resizeObserver.observe(panel);
+  } else {
+    // fallback for browsers without ResizeObserver
+    panel.addEventListener("mouseup", persistSize);
+  }
+
+  function openPanel() {
+    panel.classList.add("open");
+  }
+
+  function closePanel() {
+    persist();
+    persistSize();
+    panel.classList.remove("open");
+  }
+
+  fab.addEventListener("click", (e) => {
+    e.stopPropagation();
+    panel.classList.contains("open") ? closePanel() : openPanel();
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      closePanel();
+    });
+  }
+
+  textarea.addEventListener("input", persist);
+
+  // don't let clicks inside the panel bubble up and trigger the outside-click close
+  panel.addEventListener("click", (e) => e.stopPropagation());
+
+  // click outside → close + save
+  document.addEventListener("click", (e) => {
+    if (!panel.classList.contains("open")) return;
+    if (panel.contains(e.target) || fab.contains(e.target)) return;
+    closePanel();
+  });
+
+  window.addEventListener("beforeunload", () => {
+    persist();
+    persistSize();
+  });
+})();

@@ -147,6 +147,18 @@ function generateTemplate() {
             "\nThere is no additional factor found to close the hit other than maximum sentence of the offence therefore escalating the case as a potential match."
           );
           break;
+
+        case "Common Name":
+          lines.push(
+            "\nThere is no additional factor found to close the hit other than the commonality of the name between the user and the hit; therefore, escalating the case as a potential match."
+          );
+          break;
+
+        case "Dual Citizenship":
+          lines.push(
+            "\nThere is no additional factor found to close the hit other than the user and hit's citizenship does not recognize to each other; therefore, escalating the case as a potential match."
+          );
+          break;
       }
     });
   }
@@ -181,7 +193,7 @@ function addMatch(lines, radioName, label, valueId) {
 }
 
 // ── FILLERS ──
-const fillers = ["Maximum Penalty", "Juvenile", "Residency Mismatch"];
+const fillers = ["Maximum Penalty", "Juvenile", "Residency Mismatch", "Common Name", "Dual Citizenship"];
 const selectedFillers = [];
 const fillerGrid = document.getElementById("pmFillers");
 

@@ -152,14 +152,112 @@
     <p class="page-subtitle">Shift management, live case timer, and case history.</p>
   </div>
 
-  <div class="shiftBanner">
-    Shift: <span id="shiftStatus">No Active Shift</span>
+  <!-- ============ DASHBOARD ============ -->
+  <div class="dashboardCard">
+
+    <div class="dashboardHeader">
+      <span class="dashboardTitle">Dashboard</span>
+
+      <div class="dashboardFilters">
+        <div class="dashModeToggle">
+          <button class="dashModeBtn active" data-mode="month" onclick="setDashMode('month')">Month</button>
+          <button class="dashModeBtn" data-mode="week" onclick="setDashMode('week')">Week</button>
+        </div>
+
+        <select id="dashPeriodSelect" onchange="onDashPeriodChange()"></select>
+      </div>
+    </div>
+
+    <div class="dashboardActions">
+      <button class="addBtn" onclick="chooseBackupFolder()">📁 Set Backup Folder</button>
+      <button class="addBtn" onclick="exportBackup()">⭳ Export Backup</button>
+      <button class="addBtn" onclick="triggerImportBackup()">⭱ Import Backup</button>
+      <input type="file" id="importBackupInput" accept="application/json" style="display:none" onchange="importBackup(event)">
+      <button class="addBtn" onclick="printSelectedPeriod()">🖨 Print Report</button>
+    </div>
+
+    <div id="recoveryBanner" class="recoveryBanner" style="display:none;">
+      <span id="recoveryBannerMsg"></span>
+      <div class="recoveryBannerActions">
+        <button class="addBtn" onclick="restoreLastAutosave()">Restore</button>
+        <button class="dangerBtn" onclick="dismissRecoveryBanner()">Dismiss</button>
+      </div>
+    </div>
+
+    <div class="autosaveRow">
+      <span id="autosaveStatus" class="autosaveStatus">Autosave not yet run</span>
+      <button class="addBtn" onclick="restoreLastAutosave()">↺ Restore Last Autosave</button>
+    </div>
+
+    <div class="dashboardStats">
+      <div class="dashStat">
+        <span class="dashStatIcon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>
+        <div class="dashStatBody">
+          <span class="dashStatLabel">Total Cases</span>
+          <div class="dashStatValue" id="dashCases">0</div>
+        </div>
+      </div>
+
+      <div class="dashDivider"></div>
+
+      <div class="dashStat">
+        <span class="dashStatIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></span>
+        <div class="dashStatBody">
+          <span class="dashStatLabel">Total Hits</span>
+          <div class="dashStatValue" id="dashHits">0</div>
+        </div>
+      </div>
+
+      <div class="dashDivider"></div>
+
+      <div class="dashStat">
+        <span class="dashStatIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+        <div class="dashStatBody">
+          <span class="dashStatLabel">Total Time</span>
+          <div class="dashStatValue" id="dashTime">0:00:00</div>
+        </div>
+      </div>
+
+      <div class="dashDivider"></div>
+
+      <div class="dashStat">
+        <span class="dashStatIcon"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></span>
+        <div class="dashStatBody">
+          <span class="dashStatLabel">AHT</span>
+          <div class="dashStatValue" id="dashAht">0:00:00</div>
+        </div>
+      </div>
+
+      <div class="dashDivider"></div>
+
+      <div class="dashStat dashStat--util">
+        <span class="dashStatIcon"><svg viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></span>
+        <div class="dashStatBody">
+          <span class="dashStatLabel">Avg Utilization</span>
+          <div class="dashStatValue" id="dashUtil">0.00%</div>
+          <div class="utilBarTrack"><div class="utilBarFill" id="utilBarFill"></div></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="card">
-    <div class="topHeader">
-      <div class="titleBox">L1 SCREENING</div>
+  <!-- ============ SESSION CARD ============ -->
+  <div class="card sessionCard">
 
+    <div class="sessionTop">
+      <div class="shiftInfo">
+        <span class="shiftLabel">Shift</span>
+        <span id="shiftStatus">No Active Shift</span>
+      </div>
+
+      <div class="shiftControls">
+        <button id="startShiftBtn" onclick="startShift()">Start Shift</button>
+        <button id="endShiftBtn" onclick="endShift()">End Shift</button>
+      </div>
+    </div>
+
+    <div class="metricsRow">
       <div class="metricBox">
         <span class="metricLabel">AHT</span>
         <div class="metricValue" id="aht">0:00:00</div>
@@ -170,7 +268,7 @@
         <div class="metricValue" id="util">0.00%</div>
       </div>
 
-      <div class="metricBox">
+      <div class="metricBox statusMetric">
         <span class="metricLabel">Status</span>
         <div class="metricValue">
           <span id="liveStatus" class="liveStatus live-off">
@@ -181,33 +279,36 @@
       </div>
     </div>
 
-    <div class="shiftControls">
-      <button id="startShiftBtn" onclick="startShift()">Start Shift</button>
-      <button id="endShiftBtn" onclick="endShift()">End Shift</button>
-    </div>
-
     <div class="liveCaseTimer">
       <span class="liveCaseLabel">Current Case: <span id="activeCaseUid">—</span></span>
       <b id="activeCaseTime">0:00:00</b>
     </div>
 
-    <div class="col-header-row">
-      <span class="col-h">UID</span>
-      <span class="col-h">Status</span>
-      <span class="col-h">Location</span>
-      <span class="col-h">Issuing</span>
-      <span class="col-h">Hits</span>
-      <span class="col-h">Start</span>
-      <span class="col-h">Finish</span>
-      <span class="col-h">Actions</span>
+  </div>
+
+  <!-- ============ CASE QUEUE ============ -->
+  <div class="queueCard">
+
+    <div class="queueHeader">
+      <span class="queueTitle">Case Queue</span>
+      <div class="queueActions">
+        <button class="addBtn" onclick="addRow()">+ Add Case</button>
+        <button class="dangerBtn" onclick="clearAllCases()">Clear All Cases</button>
+      </div>
+    </div>
+
+    <div class="queueTableHead" aria-hidden="true">
+      <span>UID</span>
+      <span>Status</span>
+      <span>Location</span>
+      <span>Issuing</span>
+      <span>Hits</span>
+      <span>Start Time</span>
+      <span>End Time</span>
+      <span></span>
     </div>
 
     <div id="rows" class="caseGrid"></div>
-
-    <div class="actionRow">
-      <button class="addBtn" onclick="addRow()">+ Add Case</button>
-      <button class="dangerBtn" onclick="clearAllCases()">Clear All Cases</button>
-    </div>
 
     <div class="total">
       <div class="total-row">
@@ -236,32 +337,33 @@
 
   </div>
 
-  <!-- HISTORY -->
-  <div id="historySection">
-    <div class="historyHeader">
-      <div class="historyControls">
-        <div class="searchBox">
-          <input id="historySearch" placeholder="Search by UID or Date" oninput="renderHistory()" />
-          <span class="searchIcon">⌕</span>
-        </div>
+  <!-- ============ HISTORY CARD ============ -->
+  <div id="historySection" class="card historyCard">
 
-        <div class="historyPagination">
-          <button onclick="changeHistoryPage(-1)" class="pageBtn">‹</button>
-          <span id="historyPageInfo" class="pageInfo">1</span>
-          <button onclick="changeHistoryPage(1)" class="pageBtn">›</button>
-        </div>
-      </div>
+    <div class="historyHeader">
       <span class="historyTitle">Case History</span>
       <span class="historyTag">SYSTEM LOG</span>
+    </div>
 
-      <div class="historyActions">
-        <button onclick="clearAllHistory()" class="dangerBtn">
-          Clear All History
-        </button>
+    <div class="historyControls">
+      <div class="searchBox">
+        <input id="historySearch" placeholder="Search by UID or Date" oninput="renderHistory()" />
+        <span class="searchIcon">⌕</span>
       </div>
+
+      <div class="historyPagination">
+        <button onclick="changeHistoryPage(-1)" class="pageBtn">‹</button>
+        <span id="historyPageInfo" class="pageInfo">1</span>
+        <button onclick="changeHistoryPage(1)" class="pageBtn">›</button>
+      </div>
+
+      <button onclick="clearAllHistory()" class="dangerBtn historyClearBtn">
+        Clear All History
+      </button>
     </div>
 
     <div id="historyList"></div>
+
   </div>
 
 </div>
@@ -301,6 +403,9 @@
 <footer class="footer">
   © 2026 dispo+. All Rights Reserved.
 </footer>
+
+<!-- ============ PRINT-ONLY REPORT AREA ============ -->
+<div id="printArea"></div>
 
 <script src="js/productivity.js"></script>
 <script src="js/theme.js"></script>

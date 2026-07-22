@@ -51,6 +51,7 @@
 .details-card,
 .compare-card {
   padding: 20px;
+  transition: box-shadow 0.2s var(--ease);
 }
 
 /*NAVBAR*/
@@ -79,7 +80,7 @@
   color: var(--muted);
   text-decoration: none;
   white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease), transform 0.15s var(--ease);
   flex-shrink: 0;
 }
 
@@ -98,6 +99,8 @@
   background: var(--accent-soft);
   color: var(--text);
 }
+
+.tab-item:active { transform: scale(0.96); }
 
 .tab-item.active {
   background: var(--accent);
@@ -144,7 +147,10 @@
   padding: 16px;
   min-width: 0;
   box-sizing: border-box;
+  transition: border-color 0.2s var(--ease);
 }
+
+.column:hover { border-color: var(--border-hover); }
 
 .column .label { margin: 0 0 2px; }
 .column .textInput { width: 100%; box-sizing: border-box; }
@@ -264,12 +270,12 @@
   font-family: inherit;
   cursor: pointer;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
   max-width: 100%;
 }
 
 .offense-country-select:hover,
-.offense-country-select:focus { border-color: var(--accent); }
+.offense-country-select:focus { border-color: var(--accent); box-shadow: var(--ring); }
 
 /* =========================
    QUICK SIDEBAR (Playbook Search + Father's Name Check)
@@ -311,6 +317,12 @@
 
     min-width: 0;
     overflow:hidden;
+
+    transition: box-shadow .2s var(--ease);
+}
+
+.sidebar-card:hover {
+    box-shadow: 0 10px 26px rgba(0,0,0,.14);
 }
 
 /* Playbook = flexible, grows to fill remaining space,
@@ -440,11 +452,11 @@
   color: var(--accent-strong);
   text-decoration: none;
   margin-top: 8px;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s var(--ease), gap 0.15s var(--ease);
 }
 
 .sidebar-link svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
-.sidebar-link:hover { opacity: 0.75; }
+.sidebar-link:hover { opacity: 0.75; gap: 8px; }
 
 /* =========================
    FATHER'S NAME CHECK — fields, output, actions
@@ -480,11 +492,12 @@
   white-space: pre-wrap;
   word-break: break-word;
   margin-bottom: 8px;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
 .father-output:hover { border-color: var(--border-hover); }
 .father-output.has-content { color: var(--text); border-color: var(--accent); background: var(--surface); }
+.father-output.has-content:hover { box-shadow: var(--shadow-sm); }
 .father-output.has-error { color: var(--red); border-color: var(--red); background: var(--red-soft); }
 .father-output.neutral { color: var(--muted); background: var(--surface-alt); }
 
@@ -520,12 +533,12 @@
   font-family: inherit;
   color: var(--text);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
   flex-shrink:0;
   box-sizing: border-box;
 }
 
-.father-search-input:focus { border-color: var(--accent); }
+.father-search-input:focus { border-color: var(--accent); box-shadow: var(--ring); }
 
 .father-search-dropdown{
     flex:1;
@@ -561,7 +574,7 @@
   color: var(--text);
   cursor: pointer;
   border-bottom: 1px solid var(--border-soft);
-  transition: background 0.12s;
+  transition: background 0.12s var(--ease);
 }
 
 .father-search-item:last-child { border-bottom: none; }
@@ -613,9 +626,15 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   padding: 18px;
   box-sizing: border-box;
+  animation: modalPop 0.2s var(--ease-out);
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.96) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .pt-modal-header {
@@ -642,10 +661,11 @@
   line-height: 1;
   padding: 2px;
   flex-shrink: 0;
-  transition: color 0.15s;
+  transition: color 0.15s var(--ease), transform 0.1s var(--ease);
 }
 
 .pt-modal-close:hover { color: var(--text); }
+.pt-modal-close:active { transform: scale(0.9); }
 
 .pt-modal-template {
   font-size: 12.5px;
@@ -658,10 +678,10 @@
   cursor: pointer;
   white-space: pre-wrap;
   word-break: break-word;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
-.pt-modal-template:hover { border-color: var(--accent); }
+.pt-modal-template:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
 
 .pt-modal-note {
   margin-top: 10px;
@@ -677,6 +697,13 @@
   margin-top: 10px;
   display: flex;
   justify-content: flex-end;
+}
+
+.copy-note {
+  margin-top: 10px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
 }
 
 /* =====================================================================

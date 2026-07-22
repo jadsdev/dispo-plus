@@ -42,15 +42,6 @@ setInterval(updateTime, 1000);
   });
 })();
 
-(function highlightActiveTab() {
-  const current = window.location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".tab-item").forEach(tab => {
-    if (tab.dataset.page === current) {
-      tab.classList.add("active");
-    }
-  });
-})();
-
 /* =========================
    PAGE NAV
 ========================= */
@@ -148,6 +139,7 @@ const jurisdictionData = {
 let jurisdictionSelect,
   sentenceMonthsInput,
   sentenceYearsInput,
+  totalMonthsInput,
   startInput,
   idIssueInput,
   releaseOutput,
@@ -161,17 +153,13 @@ let jurisdictionSelect,
   templateOutputCard;
 
 /* =========================
-   SYNC FLAG
-========================= */
-let syncing = false;
-
-/* =========================
    INIT
 ========================= */
 function initRemissionApp() {
   jurisdictionSelect = document.getElementById("jurisdiction");
   sentenceMonthsInput = document.getElementById("sentenceMonths");
   sentenceYearsInput = document.getElementById("sentenceYears");
+  totalMonthsInput = document.getElementById("totalMonths");
   startInput = document.getElementById("startDate");
   releaseOutput = document.getElementById("releaseDate");
   statusBox = document.getElementById("status");
@@ -198,31 +186,44 @@ function initRemissionApp() {
 }
 
 /* =========================
+   YEARS / MONTHS — additive, whole numbers only
+   Years and Months are independent components of one sentence
+   length (e.g. 8 yrs + 7 mos), not alternate representations of
+   the same value. Total Months is the read-only derived sum that
+   calculate() and the templates use.
+========================= */
+function sanitizeWholeNumber(input, max) {
+  let digits = input.value.replace(/[^\d]/g, ""); // strip everything non-digit, including "."
+  if (digits !== "") {
+    let n = parseInt(digits, 10);
+    if (max !== undefined && n > max) n = max;
+    digits = String(n);
+  }
+  input.value = digits;
+}
+
+function updateTotalMonths() {
+  const years = parseInt(sentenceYearsInput.value, 10) || 0;
+  const months = parseInt(sentenceMonthsInput.value, 10) || 0;
+  const total = years * 12 + months;
+  totalMonthsInput.value = total || "";
+  return total;
+}
+
+/* =========================
    EVENTS
 ========================= */
 function bindEvents() {
   sentenceYearsInput.addEventListener("input", () => {
-    if (syncing) return;
-    syncing = true;
-
-    const years = parseFloat(sentenceYearsInput.value);
-    sentenceMonthsInput.value = (!years || years <= 0) ? "" : years * 12;
-
-    syncing = false;
+    sanitizeWholeNumber(sentenceYearsInput);
+    updateTotalMonths();
     calculate();
     saveState();
   });
 
   sentenceMonthsInput.addEventListener("input", () => {
-    if (syncing) return;
-    syncing = true;
-
-    const months = parseFloat(sentenceMonthsInput.value);
-    sentenceYearsInput.value = (!months || months <= 0)
-      ? ""
-      : (months / 12).toFixed(2);
-
-    syncing = false;
+    sanitizeWholeNumber(sentenceMonthsInput, 11); // months component can't exceed 11
+    updateTotalMonths();
     calculate();
     saveState();
   });
@@ -234,13 +235,10 @@ function bindEvents() {
       saveState();
     });
   });
-  
-  
-  [jurisdictionSelect, sentenceMonthsInput, startInput, idIssueInput].forEach(el => {
-    el.addEventListener("input", () => {
-      calculate();
-      saveState();
-    });
+
+  jurisdictionSelect.addEventListener("input", () => {
+    calculate();
+    saveState();
   });
 
   offense.addEventListener("input", () => {
@@ -250,6 +248,36 @@ function bindEvents() {
 
   templateOutput.addEventListener("click", () => copyTemplate(templateOutput, "copyHintToday"));
   templateOutputCard.addEventListener("click", () => copyTemplate(templateOutputCard, "copyHintCard"));
+
+  const clearAllBtn = document.getElementById("clearAllBtn");
+  if (clearAllBtn) clearAllBtn.addEventListener("click", clearAllFields);
+}
+
+/* =========================
+   CLEAR ALL FIELDS
+========================= */
+function clearAllFields() {
+  jurisdictionSelect.value = "";
+  sentenceYearsInput.value = "";
+  sentenceMonthsInput.value = "";
+  totalMonthsInput.value = "";
+  offense.value = "";
+  startInput.value = "";
+  idIssueInput.value = "";
+  releaseOutput.value = "";
+
+  summaryBox.innerHTML = "";
+
+  templateOutput.textContent = "Template will appear here.";
+  templateOutputCard.textContent = "Template will appear here.";
+
+  localStorage.removeItem(STORAGE_KEY);
+
+  updateTemplateValidity();
+
+  if (typeof showToast === "function") {
+    showToast("Fields cleared");
+  }
 }
 
 /* =========================
@@ -259,13 +287,13 @@ function calculate() {
   const country = jurisdictionSelect.value;
   const remission = jurisdictionData[country];
 
-  const sentenceMonths = parseFloat(sentenceMonthsInput.value);
+  const totalMonths = parseInt(totalMonthsInput.value, 10) || 0;
 
   const start = toDateOnly(startInput.value);
 
   // Stop calculation if date is incomplete
   if (
-    !sentenceMonths ||
+    !totalMonths ||
     !start ||
     remission === undefined
   ) {
@@ -276,7 +304,7 @@ function calculate() {
     return;
   }
 
-  const effectiveMonths = Math.round(sentenceMonths * (1 - remission));
+  const effectiveMonths = Math.round(totalMonths * (1 - remission));
 
   const release = new Date(start);
   release.setMonth(release.getMonth() + effectiveMonths);
@@ -284,8 +312,8 @@ function calculate() {
   releaseOutput.value = formatDMY(release);
 
   summaryBox.innerHTML = `
-    Sentence: ${sentenceMonths} months<br>
-    Sentence (Years): ${(sentenceMonths / 12).toFixed(2)} years<br>
+    Sentence: ${totalMonths} months<br>
+    Sentence (Years): ${(totalMonths / 12).toFixed(2)} years<br>
     Effective Sentence: ${effectiveMonths} months<br>
     Release Date: ${release.toLocaleDateString("en-US", {
       year: "numeric",
@@ -339,7 +367,7 @@ function updateTemplateValidity() {
   const hintCard = document.getElementById("copyHintCard");
 
   // ── Neutral state: nothing entered yet ──
-  if (!sentenceMonths.value || !startDate.value) {
+  if (!totalMonthsInput.value || !startDate.value) {
     templateOutput.classList.remove("valid", "invalid");
     templateOutput.classList.add("neutral");
     if (hintToday) hintToday.classList.add("disabled");
@@ -447,7 +475,6 @@ function formatDMY(date) {
   return `${day}/${month}/${year}`;
 }
 
-
 function limitYearInput(input) {
   if (!input.value) return;
 
@@ -484,14 +511,13 @@ function validateDMYDate(input) {
    TEMPLATE
 ========================= */
 function generateTemplate() {
-  if (!sentenceMonths.value || !startDate.value) {
+  if (!totalMonthsInput.value || !startDate.value) {
     templateOutput.textContent = "Template will appear here.";
     templateOutputCard.textContent = "Template will appear here.";
     return;
   }
 
-  const years = sentenceYears.value || "XX";
-  const months = sentenceMonths.value || "XX";
+  const months = totalMonthsInput.value || "XX";
   const off = offense.value || "[offense]";
   const start = formatDate(startDate.value);
   const release = releaseOutput.value
@@ -613,8 +639,6 @@ function loadState() {
 
   const state = JSON.parse(saved);
 
-  syncing = true;
-
   jurisdictionSelect.value = state.jurisdiction || "";
   sentenceYearsInput.value = state.years || "";
   sentenceMonthsInput.value = state.months || "";
@@ -622,7 +646,7 @@ function loadState() {
   idIssueInput.value = state.idIssueDate || "";
   offense.value = state.offense || "";
 
-  syncing = false;
+  updateTotalMonths();
 
   requestAnimationFrame(() => {
     calculate();

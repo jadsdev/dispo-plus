@@ -169,8 +169,18 @@
           <div class="sentence-row">
             <div class="sentence-label">Sentence</div>
             <div class="sentence-inputs">
-              <input type="number" id="sentenceYears" class="textInput" placeholder="Years">
-              <input type="number" id="sentenceMonths" class="textInput" placeholder="Months">
+              <div class="unit-field">
+                <input type="number" id="sentenceYears" class="textInput" placeholder="0" min="0" step="1" inputmode="numeric">
+                <span class="unit-suffix">yrs</span>
+              </div>
+              <div class="unit-field">
+                <input type="number" id="sentenceMonths" class="textInput" placeholder="0" min="0" max="11" step="1" inputmode="numeric">
+                <span class="unit-suffix">mos</span>
+              </div>
+              <div class="unit-field">
+                <input type="text" id="totalMonths" class="textInput totalInput" placeholder="0" disabled>
+                <span class="unit-suffix">total mos</span>
+              </div>
             </div>
           </div>
 
@@ -206,6 +216,8 @@
             <input type="text" id="releaseDate" class="textInput" readonly>
           </div>
           <span id="sentencePreview" class="muted"></span>
+
+          <button id="clearAllBtn" class="selectBtn clear-btn" type="button">Clear All Fields</button>
 
         </div>
 

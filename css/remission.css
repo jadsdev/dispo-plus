@@ -28,7 +28,7 @@
   color: var(--muted);
   text-decoration: none;
   white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease), transform 0.15s var(--ease);
   flex-shrink: 0;
 }
 
@@ -47,6 +47,8 @@
   background: var(--accent-soft);
   color: var(--text);
 }
+
+.tab-item:active { transform: scale(0.96); }
 
 .tab-item.active {
   background: var(--accent);
@@ -78,6 +80,8 @@
 
 .remission-left { display: flex; flex-direction: column; gap: 14px; }
 
+#clearAllBtn { align-self: flex-start; margin-top: 4px; }
+
 .field { display: flex; flex-direction: column; gap: 6px; }
 
 select#jurisdiction {
@@ -91,10 +95,11 @@ select#jurisdiction {
   color: var(--text);
   outline: none;
   cursor: pointer;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
-select#jurisdiction:focus { border-color: var(--accent); }
+select#jurisdiction:hover { border-color: var(--border-hover); }
+select#jurisdiction:focus { border-color: var(--accent); box-shadow: var(--ring); }
 
 .sentence-row { display: flex; flex-direction: column; gap: 6px; }
 
@@ -117,20 +122,58 @@ select#jurisdiction:focus { border-color: var(--accent); }
   border-radius: 2px;
 }
 
-.sentence-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sentence-inputs { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 10px; }
+
+@media (max-width: 480px) {
+  .sentence-inputs { grid-template-columns: 1fr 1fr; }
+  .unit-field:has(#totalMonths) { grid-column: 1 / -1; }
+}
+
+.unit-field { position: relative; display: flex; align-items: center; }
+
+.unit-field .textInput {
+  padding-right: 38px;
+  appearance: none;
+  -moz-appearance: textfield;
+}
+
+.unit-field .textInput::-webkit-outer-spin-button,
+.unit-field .textInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.unit-suffix {
+  position: absolute;
+  right: 11px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted2);
+  pointer-events: none;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.totalInput {
+  padding-right: 58px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-alt);
+  border-color: var(--border);
+  cursor: not-allowed;
+}
+
+.totalInput:disabled {
+  opacity: 1;
+  -webkit-text-fill-color: var(--text);
+}
+
+.unit-field:has(#totalMonths) .unit-suffix {
+  font-size: 9.5px;
+  right: 10px;
+}
 
 .muted { font-size: 11px; color: var(--muted); }
-
-.summary.valid {
-  border: 1px solid var(--green);
-  background: var(--accent-soft);
-}
-
-.summary.invalid {
-  border: 1px solid var(--red);
-  background: var(--red-soft);
-  opacity: 0.75;
-}
 
 .copy-hint.disabled {
   opacity: 0.4;
@@ -149,6 +192,7 @@ select#jurisdiction:focus { border-color: var(--accent); }
   display: flex;
   flex-direction: column;
   gap: 16px;
+  transition: box-shadow 0.2s var(--ease);
 }
 
 .status {
@@ -160,6 +204,7 @@ select#jurisdiction:focus { border-color: var(--accent); }
   border: 1px solid var(--border);
   color: var(--muted);
   min-height: 20px;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 
 .status.loading { color: var(--muted); }
@@ -185,11 +230,17 @@ select#jurisdiction:focus { border-color: var(--accent); }
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.15s var(--ease);
 }
 
 #templateOutput,
 #templateOutputCard {
   cursor: pointer;
+}
+
+#templateOutput:hover:not(.invalid),
+#templateOutputCard:hover:not(.invalid) {
+  box-shadow: var(--shadow-sm);
 }
 
 #templateOutput.invalid,
