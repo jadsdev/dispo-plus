@@ -1,0 +1,349 @@
+/* =====================================================================
+   POTENTIAL MATCH — page-specific styles
+   Load AFTER css/theme.css.
+===================================================================== */
+
+/*NAVBAR*/
+.tabbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+.tabbar::-webkit-scrollbar { display: none; }
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tab-item svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.tab-item:hover {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.tab-item.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.matchGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.matchRow {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface-alt, var(--card));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.matchRow:hover { border-color: var(--border-hover); }
+
+.label + .matchRow { margin-bottom: 12px; }
+
+.input-title {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+  white-space: nowrap;
+}
+
+.radioGroup label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.radioGroup label:hover { color: var(--text); }
+
+.radioGroup input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border-hover);
+  border-radius: 50%;
+  background: var(--surface);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.radioGroup input[type="radio"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* =====================================================================
+   RISK RATING SIDEBAR — potential-match.html
+===================================================================== */
+
+.page-layout {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.main-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.risk-sidebar{
+    position: sticky;
+    top: 72px;
+
+    width: 280px;
+    flex-shrink: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    align-self: stretch;
+    min-height: 100%;      /* added */
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+    box-sizing: border-box;
+
+    transition: width .25s ease;
+}
+
+.risk-sidebar.collapsed { width: 40px; }
+.risk-sidebar.collapsed .risk-sidebar-inner { opacity: 0; pointer-events: none; visibility: hidden; }
+
+/* Toggle sits inline with the first header row instead of eating
+   into top padding — this is what keeps the sidebar's first line of
+   content level with the main card's "Match Factors" label. */
+.risk-sidebar .sidebar-toggle {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 10;
+}
+
+.risk-sidebar.collapsed {
+  cursor: pointer;
+}
+
+.risk-sidebar .sidebar-toggle svg { width: 15px; height: 15px; stroke: var(--muted); transition: stroke 0.15s; }
+.risk-sidebar .sidebar-toggle:hover svg { stroke: var(--text); }
+
+/* Same top padding as the main card so both columns' first line of
+   content sit on the same baseline. Extra right padding keeps the
+   header label clear of the toggle button. */
+.risk-sidebar-inner{
+    padding:20px 24px 14px 14px;
+
+    display:flex;
+    flex-direction:column;
+
+    flex:1;          /* missing */
+    min-height:0;    /* missing */
+
+    box-sizing:border-box;
+    transition:opacity .2s, visibility .2s;
+}
+
+.risk-search-wrap { margin-bottom: 10px; }
+
+.risk-search-input {
+  width: 100%;
+  background: var(--inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.risk-search-input:focus { border-color: var(--accent); }
+
+.risk-list {
+  max-height: 560px;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  padding-right: 2px;
+}
+
+.risk-item {
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--muted);
+  border-radius: var(--radius-sm);
+  padding: 7px 9px;
+  background: var(--surface-alt, var(--card));
+}
+
+.risk-item[data-risk="High"]   { border-left-color: #e5484d; }
+.risk-item[data-risk="Medium"] { border-left-color: #f5a524; }
+.risk-item[data-risk="Low"]    { border-left-color: #45a049; }
+.risk-item[data-risk="TBD"]    { border-left-color: #e5c53d; }
+.risk-item[data-risk="N/A"]    { border-left-color: var(--muted); }
+
+.risk-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.risk-item-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.risk-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.risk-badge.High   { background: rgba(229,72,77,0.15);  color: #e5484d; }
+.risk-badge.Medium { background: rgba(245,165,36,0.15); color: #c98118; }
+.risk-badge.Low    { background: rgba(69,160,73,0.15);  color: #2f8132; }
+.risk-badge.TBD    { background: rgba(229,197,61,0.15); color: #a3891c; }
+.risk-badge.NA { background: var(--inset); color: var(--muted); }
+
+.risk-item-note {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.risk-empty {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* ── Sidebar header row spacing (match other section labels) ── */
+.risk-sidebar .sidebar-header-row {
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header-row {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* =====================================================================
+   RESPONSIVE BREAKPOINTS
+===================================================================== */
+
+/* ---- Tablet / narrow desktop: shrink sidebar before stacking ---- */
+@media (max-width: 1100px) {
+  .risk-sidebar { width: 240px; }
+}
+
+/* ---- Stack sidebar under main content ---- */
+@media (max-width: 900px) {
+  .page-layout {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .risk-sidebar {
+    position: static;
+    width: 100% !important;
+    max-height: none;
+    order: 2;
+  }
+
+  .risk-sidebar .risk-sidebar-inner { padding: 16px; }
+
+  .risk-sidebar.collapsed .risk-sidebar-inner { display: none; }
+  .risk-sidebar.collapsed { width: 100% !important; }
+}
+
+@media (max-width: 560px) {
+  .matchRow { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .matchRow { padding: 10px 12px; }
+  .radioGroup { gap: 10px; }
+}

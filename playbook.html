@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="icon" type="image/x-icon" href="icon/dispoicon-dplus.ico">
+<title>dispo+ | Playbook</title>
+
+<script>
+  (function () {
+    var t = localStorage.getItem("dispo-theme") === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/playbook.css">
+</head>
+
+<body>
+
+<!-- ============ OFF-CANVAS NAV + SETTINGS SIDEBAR ============ -->
+<div class="appnav-overlay" id="appnavOverlay"></div>
+
+<aside class="appnav-sidebar" id="appnavSidebar">
+  <div class="appnav-header">
+    <div class="appnav-logo">dispo<span>+</span></div>
+    <button class="appnav-close" id="appnavClose" aria-label="Close menu">
+      <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div class="appnav-body">
+    <div class="appnav-section-label">Menu</div>
+    <nav class="appnav-links">
+      <a href="index.html">
+        <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+        Home
+      </a>
+      <a href="productivity.html">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        My Productivity
+      </a>
+      <a href="maxpenalty.html">
+        <svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 8 2 14a4 4 0 0 0 6 0z"/><path d="M19 8l-3 6a4 4 0 0 0 6 0z"/><path d="M5 8h14"/><path d="M8 21h8"/></svg>
+        Maximum Penalty
+      </a>
+      <a href="common-name.html">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2"/><path d="M15 10h4M15 14h4M6 17h6"/></svg>
+        Screening
+      </a>
+      <a href="potential-match.html">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        Potential Match
+      </a>
+      <a href="remission.html">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Remission
+      </a>
+      <a href="playbook.html">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+        Playbook
+      </a>
+      <a href="jpgpdf.html">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        Image to PDF
+      </a>
+    </nav>
+
+    <div class="appnav-divider"></div>
+
+    <div class="appnav-section-label">Appearance</div>
+    <div class="theme-switch">
+      <button class="theme-opt" data-theme="light">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        Light
+      </button>
+      <button class="theme-opt" data-theme="dark">
+        <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+        Dark
+      </button>
+    </div>
+  </div>
+
+  <div class="appnav-footer">dispo+ · internal screening toolkit</div>
+</aside>
+
+<!-- ============ TOPBAR ============ -->
+<header class="topbar">
+  <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">
+    <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+
+  <a href="index.html" class="topbar-brand" style="text-decoration:none;">
+  dispo<span>+</span>
+  <span class="topbar-page-label">Playbook</span>
+</a>
+
+  <div class="topbar-right">
+    <span id="timeBar">PHT: --:--:-- · Dublin: --:--:--</span>
+    <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle theme">
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<nav class="tabbar" id="tabbar">
+  <a href="index.html" class="tab-item" data-page="index.html">
+    <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
+    Home
+  </a>
+  <a href="productivity.html" class="tab-item" data-page="productivity.html">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+    Productivity
+  </a>
+  <a href="maxpenalty.html" class="tab-item" data-page="maxpenalty.html">
+    <svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 8 2 14a4 4 0 0 0 6 0z"/><path d="M19 8l-3 6a4 4 0 0 0 6 0z"/><path d="M5 8h14"/><path d="M8 21h8"/></svg>
+    Max Penalty
+  </a>
+  <a href="common-name.html" class="tab-item" data-page="common-name.html">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2"/><path d="M15 10h4M15 14h4M6 17h6"/></svg>
+    Screening
+  </a>
+  <a href="potential-match.html" class="tab-item" data-page="potential-match.html">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    Potential Match
+  </a>
+  <a href="remission.html" class="tab-item" data-page="remission.html">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    Remission
+  </a>
+  <a href="playbook.html" class="tab-item" data-page="playbook.html">
+    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+    Playbook
+  </a>
+  <a href="jpgpdf.html" class="tab-item" data-page="jpgpdf.html">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+    Image to PDF
+  </a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <span class="page-eyebrow">Guide</span>
+  
+    <h1 class="page-title">
+      Playbook
+      <span class="version-badge">Updated Jul 8, 2026</span>
+    </h1>
+  
+    <p class="page-subtitle">
+      Standard operating procedures and reference material.
+    </p>
+  </div>
+
+  <div class="card">
+
+    <div class="label">CMS Playbook</div>
+
+    <div class="search-wrapper">
+      <div class="search-box">
+        <span class="search-icon">⌕</span>
+        <input id="playbookSearch" placeholder="Search the playbook...">
+      </div>
+      <div id="searchDropdown" class="search-dropdown"></div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-chip active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="standalone">Standalone</button>
+      <button class="filter-chip" data-filter="supplemental">Supplemental</button>
+      <div class="expand-controls">
+        <button id="expandAllBtn">Expand all</button>
+        <button id="collapseAllBtn">Collapse all</button>
+      </div>
+    </div>
+
+    <div class="accordion">
+
+      <div class="acc-section-label standalone">Standalone Factors</div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Place of Birth Mismatch — Place of Birth</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Place of Birth Mismatch</p>
+          <p><b>Standalone Factor:</b> Place of Birth</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">POB mismatch. Hit's POB is XXXXXXXX as per CMS while per KYC, user's POB is YYYYYYYY thus the match is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">DOB/YOB Mismatch — Date of Birth</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> DOB/YOB mismatch</p>
+          <p><b>Standalone Factor:</b> Date of Birth</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">DOB mismatch. Hit's DOB is XX/XX/XXXX as per KYC, user's DOB is YY/YY/YYYY thus the match is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">DOB/YOB Mismatch — Year of Birth</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> DOB/YOB mismatch</p>
+          <p><b>Standalone Factor:</b> Year of Birth</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">YOB mismatch. Hit's YOB is XX/XX/XXXX as per KYC, user's DOB is YY/YY/YYYY thus the match is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">DOB/YOB Mismatch — Inferred Date of Birth</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> DOB/YOB mismatch</p>
+          <p><b>Standalone Factor:</b> Inferred Date of Birth</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">DOB Mismatch. Per CMS, the hit was reported as 50 years old in 2020 (inferred YOB: 1970), while the KYC user was born in 2002. Therefore, the hit is considered a false positive. </span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Gender Mismatch — Gender based on Names</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Gender mismatch</p>
+          <p><b>Standalone Factor:</b> Gender based on Names</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Gender mismatch. Hit is male as per CMS while as per KYC, user's full name is Rafi binte Ali, according to the Muslim naming convention 'Binte' indicates that user is female, thus the match is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Gender Mismatch — Gender based Photo</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Gender mismatch</p>
+          <p><b>Standalone Factor:</b> Gender based Photo</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Gender mismatch. Hit is male as per CMS, while as per KYC, user's ID shows that user is female thus the match is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">ID Mismatch — ID Number</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> ID mismatch</p>
+          <p><b>Standalone Factor:</b> ID Number</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">ID number mismatch. Hit's ID number is S1234567A as per CMS while as per KYC, user's ID number is S9876543B. As both are Singapore NRIC numbers (same format and does not expire) and differ, this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Deceased Hit — Deceased</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Deceased hit</p>
+          <p><b>Standalone Factor:</b> Deceased</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Hit is Deceased. Per CMS, hit was deceased since January 2025 while customer is pursuing KYC application hence this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Father's Name Mismatch — Father's Name</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Father's Name Mismatch</p>
+          <p><b>Standalone Factor:</b> Father's Name</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Father's name mismatch. Per CMS, hit's father's name is Faizal Hussein. Per KYC, customer's father's name is Mohamed Khalid. Hence this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Others — Mother's Name Mismatch</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Standalone Factor:</b> Mother's Name Mismatch</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Mother's name mismatch. Per CMS, hit's motherr's name is XXXXXX . Per KYC, customer's mother's name is YYYYYYY . Hence this is a false positive.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Death Sentence — Death Sentence</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Death sentence</p>
+          <p><b>Standalone Factor:</b> Death Sentence</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Death Sentence. Per CMS, hit was sentence to death on May 2006. Per KYC, customer had completed KYC on 1 April 2026. Unlikely for the customer to have provided documents and completed KYC while imprisoned, hence this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">DOB/YOB Mismatch — Age Mismatch (not yet born)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> DOB/YOB Mismatch</p>
+          <p><b>Standalone Factor:</b> Age Mismatch</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Age Mismatch. Per CMS, hit was arrested in June 2000 while the user was born in January 2004. The customer was not even born yet when the crime was committed hence this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">DOB/YOB Mismatch — Age Mismatch (father/child)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> DOB/YOB Mismatch</p>
+          <p><b>Standalone Factor:</b> Age Mismatch</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Age Mismatch. Per CMS, hit was the father of Sanjeev Kumar whose born in 1975 while per KYC, the user was born in May 1, 2002. As it is highly unlikely for someone who has not been born yet to have a child, this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">DOB/YOB Mismatch — Age Mismatch (age gap)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> DOB/YOB Mismatch</p>
+          <p><b>Standalone Factor:</b> Age Mismatch</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Age Mismatch. Per CMS, hit who was born in 1990/1991 was 30 years old (reported June 2020) while the user who was born on May 1, 1997 was just 23 years old at that time. As the hit and user have almost 7 years age gap, this is as false positive.</span></p>
+          <p><b>Note:</b> <a href="https://bytedance.sg.larkoffice.com/sheets/F1K8sv1EQhHqF2tvNzElOJA9gyh?sheet=7451b8" target="_blank" rel="noopener noreferrer">Remission</a></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Jail Term Mismatch — Jail Term (Date Today)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Jail term mismatch</p>
+          <p><b>Standalone Factor:</b> Jail Term (Date Today)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Jail Term Mismatch. Per CMS, hit was sentenced to 205 month(s) imprisonment for thievery starting June 1, 2016. Hit is eligible for release on November 1, 2027 applying the remission period of 33.33% of the total sentence. The subject is likely to still be in prison therefore highly unlikely to have access to TikTok through a personal device, hence concluding hit as false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Jail Term Mismatch — Jail Term (Card Issuing Date)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Jail term mismatch</p>
+          <p><b>Standalone Factor:</b> Jail Term (Card Issuing Date)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Jail term mismatch. Per CMS, hit was sentenced to 205 month(s) imprisonment for thievery starting June 1, 2016. Hit is eligible for release on November 1, 2027 applying the remission period of 33.33% of the total sentence.  As it is unlikely for the hit to have been able to renew their ID during imprisonment, this hit is a false positive. </span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Full Name Mismatch — Arabic Name</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Full name mismatch</p>
+          <p><b>Standalone Factor:</b> Arabic Name</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Full name mismatch. As per CMS, hit is Abdul Majid and was arrested for being involved in gambling operations. Per KYC, customer's full name is Amir Bin Abdul Majid. As 'bin' means 'son of', 'Amir' is the customer's given name and 'Abdul Majid' is his father's name. As this is a hit against the customer's father's name, this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Full Name Mismatch — Full Name</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Full name mismatch</p>
+          <p><b>Standalone Factor:</b> Full Name</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Full name mismatch. Per CMS, hit is Thanh Phong Nguyen, while the customer's full name per KYC is Thanh Phuong Nguyen. As hit and customer's names have differing name elements (Phong vs Phuong), this is a false positive</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Full Name Mismatch — EL/AL/UL</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Full name mismatch</p>
+          <p><b>Standalone Factor:</b> EL/AL/UL</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Full name mismatch. Per CMS, hit is Amir El Masry, while the customer's full name per KYC is Amir Masry. EL works as prefixes for Arabic surnames. Adding these prefixes may refer to a different family line hence this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Full Name Mismatch — Middle Name Mismatch</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Full name mismatch</p>
+          <p><b>Standalone Factor:</b> Middle Name Mismatch</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Middle name mismatch. Per CMS, hit is Alexandra Mae Alvarez Reyes, while the customer's full name per KYC is Alexandra Mae Trinidad Reyes. As the hit and customer have different middle names (Trinidad vs Alvarez), this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Others — Photo (racial difference)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Standalone Factor:</b> Photo</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Photo mismatch. Hit is Benjamin Taylor, former president of ABC corporation and his photo was found per CMS source indicating that he is Caucasian (insert URL). Per KYC, customer is Benjamin Taylor and his photo per ID indicates that he is Asian. Due to racial differences, this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="standalone">
+        <div class="acc-header">Others — Photo (age difference)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Standalone Factor:</b> Photo</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Photo mismatch. Hit is Benjamin Taylor, former president of ABC corporation and his photo was found per CMS source dated 2023 indicating that he is a man in his late 50s (insert URL). Per KYC, customer is Benjamin Taylor and his selfie photo submitted in 2023 indicates that he is a man in his early 20s. Due to age differences, this is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-section-label supplemental">Supplemental Factors</div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Juvenile Anonymity</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Juvenile Anonymity</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Juvenile Anonymity. The report relates to an offence committed when the subject was a minor (under 18). International child-protection standards generally restrict the disclosure of juveniles' identities in legal proceedings and media reporting. As such, the presence of identifying details makes it unlikely that the report refers to the client. Therefore, the match is assessed as a false positive.</span></p>
+          <p><b>Note:</b> <a href="https://www.ohchr.org/en/instruments-mechanisms/instruments/united-nations-standard-minimum-rules-administration-juvenile?__cf_chl_f_tk=9T3lZSfbtQUrXPNJozdHB_pxCu7jHwU1lrP9D3c0H1g-1783434171-1.0.1.1-h5T_Q8qAsRAPVA.1WxUzgaMT6GBNGdugiLIrZ0JBFJA"target="_blank" rel="noopener noreferrer">UN Standard Minimum Rules Administration Juvenile</a></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — MACR</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> MACR</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Age Mismatch. Per CMS, hit was convicted for corruption and cheating the public in 2020. Per KYC, the user was born on 200X therefore was only XX years old while the minimum age to criminal responsibility in Pakistan is 7 years old. This is false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Age Requirement for a Certain Position</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Age Requirement for a Certain Position</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Age Mismatch. Per CMS, hit was a member of the Philippines Congress since 2015 while the user was born in 2000. According to the Philippine Law, someone has to be XX years old to be member of the congress. This is false positive.</span></p>
+          <p><b>Note:</b> Upload evidence from a reputable source.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Age of Marriage</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Age of Marriage</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Age Mismatch. Per CMS, hit is the spouse of XXXXXXXXX during the last report update in May 2020. Per KYC, the user was born on 200X therefore was only XX years old while the legal age to marry in China is 22 years old for men. This is a false positive.</span></p>
+          <p><b>Note:</b> <a href="https://assets.pewresearch.org/wp-content/uploads/sites/12/2016/09/FT_Marriage_Age_Appendix_2016_09_08.pdf"target="_blank" rel="noopener noreferrer">Minimum Age of Marriage per Country</a></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Age to Enter a Contract</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Age to Enter a Contract</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Age Mismatch. Per CMS, hit was convicted for corruption and cheating the public in 2020. Per KYC, the user was born on 200X therefore was only XX years old while the legal age to enter a contract in Indonesia is 21 years old. This is false positive.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Age of Compulsory Education</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Age of Compulsory Education</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Age Mismatch. Per CMS, hit was an associate in ABC Legal Firm in 2020. Per KYC, the user was born on 200X therefore was only XX years old while the Philippines Age of Compulsary Education is between 5-18 years old. This is a false positive.</span></p>
+          <p><b>Note:</b> School system varies by country — 
+            <a href="https://gq.maarifschools.org/page/turkish-education-system"target="_blank" rel="noopener noreferrer">Turkey School System</a>, 
+            <a href="https://www.scholaro.com/db/countries/Pakistan/Education-System"target="_blank" rel="noopener noreferrer">Pakistan School System</a>, 
+            <a href="https://www.scholaro.com/db/countries/Myanmar/Education-System"target="_blank" rel="noopener noreferrer">Myanmar School System</a>.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Convicted Felons</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Convicted Felons</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Per CMS, hit was sentenced to 1 year imprisonment in Pakistan in 2000 for drug-trafficking. Per KYC, the customer was issued a driver's licence in Australia in 2020. Australia denies entry to felons. This is false positive.</span></p>
+          <p><b>Note:</b> 
+            <a href="https://worldpopulationreview.com/country-rankings/countries-that-dont-allow-felons"target="_blank" rel="noopener noreferrer">Felon not allowed</a></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Wanted/Absconder (ID Issuing Date)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Wanted/Absconder (ID Issuing Date)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Per CMS, hit was sentenced in absentia in 2000 for terrorism therefore is wanted by authorities. Per KYC the user was issued a national identity card in 2022. It is highly unlikely for someone wanted by autorities to be issued a government document hence this is false positive.</span></p>
+          <p><b>Note:</b> For non-sanction hits ONLY.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Wanted/Absconder (Livestream or LH)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Wanted/Absconder (Livestream or LH)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Per CMS, hit was sentenced in absentia in 2000 for terrorism therefore is wanted by authorities. Per Arena, user can be seen livestreaming in 2022. It is highly unlikely for someone wanted by autorities to be livestreaming and compromise their location hence this is false positive.</span></p>
+          <p><b>Note:</b> For non-sanction hits ONLY.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Jail Term Mismatch — Jail Term (Livestream Date)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Jail term mismatch</p>
+          <p><b>Supplemental Factor:</b> Jail Term (Livestream Date)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Jail Term Mismatch. Per CMS, hit was sentenced to 105 month(s) imprisonment for thievery starting June 2016. Hit is eligible for release in April 2022 applying the remission period of 33.33% of the total sentence. The user can be seen livestreaming in Arena in 2021 while the hit was likely to still be in prison therefore highly unlikely to have access to TikTok through a personal device, hence concluding hit as false positive.</span></p>
+          <p><b>Note:</b> For non-sanction hits ONLY.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Jail Term Mismatch — Jail Term (LH Content Upload Date)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Jail term mismatch</p>
+          <p><b>Supplemental Factor:</b> Jail Term (LH Content Upload Date)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Jail Term Mismatch. Per CMS, hit was sentenced to 105 month(s) imprisonment for thievery starting June 2016. Hit is eligible for release in April 2022 applying the remission period of 33.33% of the total sentence. The user can be seen in the LH uploaded content in 2021 with Video ID: ________ while the hit was likely to still be in prison therefore highly unlikely to have access to TikTok through a personal device, hence concluding hit as false positive.</span></p>
+          <p><b>Note:</b> For non-sanction hits ONLY.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Jail Term Mismatch — Jail Term (LH Registration Date)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Jail term mismatch</p>
+          <p><b>Supplemental Factor:</b> Jail Term (LH Registration Date)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Jail Term Mismatch. Per CMS, hit was sentenced to 105 month(s) imprisonment for thievery starting June 2016. Hit is eligible for release in April 2022 applying the remission period of 33.33% of the total sentence. Per LH, the user registered to TikTok in May 2020 while the hit was likely to still be in prison therefore highly unlikely to have access to TikTok through a personal device, hence concluding hit as false positive.</span></p>
+          <p><b>Note:</b> For non-sanction hits ONLY.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Full Name Mismatch — Full Legal Name Mismatch</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Full name mismatch</p>
+          <p><b>Supplemental Factor:</b> Full Legal Name Mismatch</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Legal Name Mismatch. Per CMS, hit is Rustom Padilla aka Bibi G. Hari, while the user’s full name per KYC is Bibi G. Hari. As the hit and user have differing primary names, this is a false positive.</span></p>
+          <p><b>Note:</b> User's Name: Bibi G. Hari · Hit's Alias: Bibi G. Hari · Hit's Legal Name: Rustom Padilla.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Full Name Mismatch — Legal Name Mismatch (MRCL)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Full name mismatch</p>
+          <p><b>Supplemental Factor:</b> Legal Name Mismatch - MRCL</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Legal Name Mismatch. Per CMS, hit is Bibi Gandang Hari aka. Bibi Gandang, while the user’s full name per KYC is Bibi Gandang. As the hit has a added elements in the primary name (Hari), this is a false positive.</span></p>
+          <p><b>Note:</b> User's Name: Bibi Gandang · Hit's Alias: Bibi Gandang · Hit's Legal Name: Bibi Gandang Hari.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Full Name Mismatch — Legal Name Mismatch (GTC)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Full name mismatch</p>
+          <p><b>Supplemental Factor:</b> Legal Name Mismatch - GTC</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Legal Name Mismatch. Per CMS, hit is Bebe Hari aka. Bibi Hari, while the user’s full name per KYC is Bibi Hari. As the user and hit have a differing spelling in the legal names and the subject was sentenced, it is highly likely that a court or disciplinary committee has already reviewed the their documents confirming case as false positive.</span></p>
+          <p><b>Note:</b> User's Name: Bibi Hari · Hit's Alias: Bibi Hari · Hit's Legal Name: Bebe Hari.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Citizenship Mismatch — Timeline from Position Held</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Citizenship mismatch</p>
+          <p><b>Supplemental Factor:</b> Citizenship (Timeline from Position Held)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Citizenship Mismatch. Per CMS, hit is a member of the CPPCC's Standing Commit effective 2018-2022. Per KYC, customer was Singapore citizen per NRIC issued in 2019. As China public servants need to be a Chinese Citizen per the Law of the People's Republic of China on Public Servants and China does not recognise dual citizenship, this is a citizenship mismatch hence false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Citizenship Mismatch — Birthdate to Issuing Date</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Citizenship mismatch</p>
+          <p><b>Supplemental Factor:</b> Citizenship (Birthdate to Issuing Date)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Citizenship Mismatch. Per CMS, hit is a citizen of PK as of 2005 when the CMS report was last updated. Per KYC, user was born in Motoling, Indonesia therefore they are likely indonesian from birth until they were issued the national ID in 2015. As Indonesia does not recognise dual citizenship, this is a citizenship mismatch hence false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Citizenship Mismatch — Issuing Date to Expiry Date</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Citizenship mismatch</p>
+          <p><b>Supplemental Factor:</b> Citizenship (Issuing Date to Expiry Date)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Citizenship Mismatch. Per CMS, hit is a citizen of KP as of 2021 when the CMS report was last updated. Per KYC, user is a KR citizen per the National Identity Card valid from 2020-2030. As North Korea does not recognise dual citizenship, this is a citizenship mismatch hence false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Citizenship Mismatch — Issuing Date to Creation Date</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Citizenship mismatch</p>
+          <p><b>Supplemental Factor:</b> Citizenship (Issuing Date to Creation Date)</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Citizenship Mismatch. Per CMS, hit is a citizen of KP as of 2021 when the CMS report was last updated. Per KYC, user is a KR citizen per the National Identity Card issued in 2020 used for KYC application in June 2026. As North Korea does not recognise dual citizenship, this is a citizenship mismatch hence false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Citizenship Mismatch — No Timeline (superseded)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Citizenship mismatch</p>
+          <p><b>Supplemental Factor:</b> Citizenship - No Timeline</p>
+          <p><s>Citizenship Mismatch. Per CMS, hit is a citizen of CN. Per KYC, customer was Singapore citizen per NRIC issued in 2019. As China does not recognise dual citizenship, this is a citizenship mismatch hence false positive.</s></p>
+          <p><b>Note:</b> Updated: 07/01/2026 — this entry has been struck through/superseded in the source table.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Photo (facial structure)</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Photo</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Photo Mismatch. Per one of the CMS link and the user's submitted document, they have different facial structures, eye shape, eye brows, hair line and nose shape,  thereby confirming that this hit is a false positive.</span></p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Common Name</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Common Name</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Common name match. As per CMS, the hit is MOHAMAD ALI with location in Pakistan and no other identifiers noted. As per KYC, our user is MOHAMAD ALI and country of stay is Pakistan. Noted name and location match between hit and user, however as per "TTL Onboarding Risk-Based Disposition Factors", MOHAMAD has an incidence of 5833215 and a ratio of 1:33. While the ALI is a common name in Pakistan and has an incidence of 10946208 and ratio of 1:16. Given the commonality of the name, it is unlikely that user and hit are the same individual. Hence, this is a false positive.</span></p>
+          <p><b>Note:</b> Common names are limited to full name with 3 or fewer name elements. For non-sanction hits ONLY.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Residency</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Residency</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Residency Mismatch. Per CMS, hit is a CN resident while the user is from UAE/PK. As the hit and user have different residency, this is a false positive.</span></p>
+          <p><b>Note:</b> 
+            <a href="https://schengenvisainfo.com/schengen-area/"target="_blank" rel="noopener noreferrer">Schengen Area</a> — must always be partnered with common name if no other factors are left.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Maximum Sentence</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Maximum Sentence</p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Per CMS, the hit was arrested in 2022 for terrorism. Given the severity of the crime in (hit's jurisdiction) where the maximum sentence is death penalty, they are expected to serve a long time in prison. This is false positive.</span></p>
+          <p><b>Note:</b> Must always be partnered with common name if no other factors are left.</p>
+        </div>
+      </div>
+
+      <div class="acc-item" data-section="supplemental">
+        <div class="acc-header">Others — Maximum Sentence (Arrested) + Issuing Date</div>
+        <div class="acc-body">
+          <p><b>CMS Rationale:</b> Others</p>
+          <p><b>Supplemental Factor:</b> Maximum Sentence (Arrested) + Issuing Date <em>(use only as an alternative if maximum sentence cannot cover current date)</em></p>
+          <p><b>Sample Disposition:</b> <span class="disposition-text" onclick="copyDisposition(this)">Per CMS, the hit was arrested in 2012 for terrorism. Given the severity of the crime in (hit's jurisdiction) where the maximum sentence is 10 Years Imprisonment, they would not have been issued a government document in 2020. This is false positive.</span></p>
+          <p><b>Note:</b> Must always be partnered with common name if no other factors are left.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<footer class="footer">
+  © 2026 dispo+. All Rights Reserved.
+</footer>
+
+<div class="tab-arrows">
+  <button onclick="goPrev()">‹</button>
+  <button onclick="goNext()">›</button>
+</div>
+
+<script src="js/playbook.js"></script>
+<script src="js/theme.js"></script>
+
+</body>
+</html>

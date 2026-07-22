@@ -1,0 +1,493 @@
+/* =====================================================================
+   PLAYBOOK — page-specific styles
+   Load AFTER css/theme.css.
+===================================================================== */
+
+/*NAVBAR*/
+.tabbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+.tabbar::-webkit-scrollbar { display: none; }
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tab-item svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.tab-item:hover {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.tab-item.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* =========================
+   SEARCH BAR
+========================= */
+.search-wrapper { position: relative; margin-bottom: 12px; width: 100%; }
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: var(--inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  gap: 9px;
+  transition: border-color 0.15s;
+}
+
+.search-box:hover { border-color: var(--border-hover); }
+.search-box:focus-within { border-color: var(--accent); }
+
+.search-icon { font-size: 13px; color: var(--muted); }
+
+.search-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 12.5px;
+  font-family: inherit;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+  z-index: 30;
+}
+
+.search-item {
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.search-item:hover,
+.search-item.active { background: var(--accent-soft); color: var(--accent-strong); }
+.search-item:last-child { border-bottom: none; }
+
+/* =========================
+   FILTER BAR (new)
+========================= */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filter-chip {
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--inset);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.filter-chip:hover { border-color: var(--border-hover); color: var(--text); }
+
+.filter-chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.expand-controls {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.expand-controls button {
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.expand-controls button:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
+@media (max-width: 640px) {
+  .expand-controls { margin-left: 0; width: 100%; }
+  .expand-controls button { flex: 1; }
+}
+
+/* =====================================================================
+   ACCORDION — collapsible reference cards
+   Standalone = green, Supplemental = blue
+===================================================================== */
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Section dividers ── */
+.acc-section-label {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+
+  margin: 18px 0 6px;
+  padding: 8px 12px;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+
+  backdrop-filter: blur(10px);
+}
+
+.acc-section-label:first-child { margin-top: 0; }
+
+.acc-section-label.standalone {
+  background: rgba(47,129,50,.14);
+  border:1px solid rgba(47,129,50,.35);
+  color:#45a049;
+}
+
+.acc-section-label.supplemental {
+  background: rgba(42,143,214,.14);
+  border:1px solid rgba(42,143,214,.35);
+  color:#2a8fd6;
+}
+
+/* ── Card ── */
+.acc-item {
+  background:var(--surface);
+
+  border:1px solid var(--border);
+  border-left:3px solid transparent;
+
+  border-radius:8px;
+
+  overflow:hidden;
+
+  transition:.18s ease;
+}
+
+.acc-item:hover {
+  border-color:var(--border-hover);
+}
+
+.acc-item[data-section="standalone"] {
+  border-left-color:#45a049;
+}
+
+.acc-item[data-section="supplemental"] {
+  border-left-color:#2a8fd6;
+}
+
+/* ── Header (title bar) — now the toggle control ── */
+.acc-header {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+
+  padding:10px 40px 10px 13px;
+
+  font-size:12px;
+  font-weight:700;
+
+  background:
+  linear-gradient(
+    90deg,
+    rgba(255,255,255,.05),
+    transparent
+  );
+
+  border-bottom:1px solid var(--border-soft);
+
+  color:var(--text);
+}
+
+.acc-item[data-section="standalone"] .acc-header {
+  background: rgba(69, 160, 73, 0.08);
+  color: #2f8132;
+}
+
+.acc-item[data-section="supplemental"] .acc-header {
+  background: rgba(42, 143, 214, 0.08);
+  color: #1f6fb2;
+}
+
+/* Chevron indicator — pure CSS, no HTML change needed per entry */
+.acc-header::after {
+  content: "";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-65%) rotate(45deg);
+  transition: transform .2s ease;
+  opacity: .55;
+}
+
+.acc-item.open .acc-header {
+  border-bottom-color: var(--border-soft);
+}
+
+.acc-item.open .acc-header::after {
+  transform: translateY(-35%) rotate(-135deg);
+  opacity: .85;
+}
+
+/* Collapsed by default; .open reveals body */
+.acc-body {
+  padding:10px 13px;
+  max-height: 0;
+  overflow: hidden;
+  font-size:12px;
+  line-height:1.55;
+  color:var(--muted);
+  transition: max-height .3s ease, padding .3s ease;
+}
+
+.acc-item:not(.open) .acc-body {
+  max-height: 0 !important;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.acc-item.open .acc-body {
+  max-height: 1200px;
+}
+
+.acc-body p {
+  margin:0;
+  padding:7px 0;
+  border-bottom:1px dashed var(--border-soft);
+}
+
+.acc-body p:last-child {
+  border-bottom:none;
+}
+
+.acc-body b {
+  display:inline-block;
+  min-width:130px;
+  color:var(--text);
+  font-weight:700;
+}
+
+.acc-body a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.acc-body a:hover {
+  text-decoration: underline;
+}
+
+/* ── Click-to-copy Sample Disposition text ── */
+.disposition-text {
+  cursor: pointer;
+  position: relative;
+  border-radius: 5px;
+  padding: 1px 4px;
+  margin: -1px -4px;
+  color: var(--text);
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+/* Visible copy affordance — no longer hover-only discovery */
+.disposition-text::before {
+  content: "⧉";
+  display: inline-block;
+  font-size: 10px;
+  color: var(--accent);
+  opacity: .65;
+  margin-right: 5px;
+  transform: translateY(-1px);
+}
+
+.disposition-text:hover {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.disposition-text:hover::before {
+  opacity: 1;
+}
+
+.disposition-text.copied {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.disposition-text.copied::after {
+  content: "Copied!";
+  position: absolute;
+  top: -24px;
+  right: 0;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  animation: copyFadeIn 0.15s ease-out;
+}
+
+@keyframes copyFadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .acc-header { padding: 11px 40px 11px 13px; }
+  .acc-item.open .acc-body { padding: 12px 13px; }
+}
+
+/* =========================
+   UNDER CONSTRUCTION (kept for reuse elsewhere if needed)
+========================= */
+.under-construction {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.uc-box {
+  text-align: center;
+  padding: 32px 36px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  max-width: 340px;
+  animation: floatIn 0.5s ease-out;
+}
+
+.uc-icon { font-size: 34px; margin-bottom: 10px; }
+.uc-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.uc-text { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes floatIn {
+  from { transform: translateY(12px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.uc-back-btn {
+  margin-top: 16px;
+  padding: 9px 16px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.uc-back-btn:hover { border-color: var(--accent); }
+
+/* =========================
+   PLAYBOOK VERSION BADGE
+========================= */
+
+.version-badge {
+  display:inline-flex;
+  align-items:center;
+
+  margin-left:8px;
+  padding:4px 9px;
+
+  vertical-align:middle;
+
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.4px;
+
+  color:var(--accent);
+
+  background:var(--accent-soft);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  border-radius:999px;
+
+  text-transform:uppercase;
+}

@@ -1,0 +1,749 @@
+/* =====================================================================
+   MAXIMUM PENALTY — page-specific styles
+   Load AFTER css/theme.css. Uses tokens + primitives defined there.
+===================================================================== */
+
+/* =========================
+   PAGE LAYOUT
+========================= */
+.page-layout {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.main-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =========================
+   SECTION HEADERS
+   (used by the Primary Details and User/Hit cards so each
+   standalone card reads clearly at a glance)
+========================= */
+.card-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.card-section-header .label { margin: 0; }
+
+.card-section-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Primary Details / User-Hit cards sit as their own distinct
+   surfaces above the main working card, rather than nested
+   sections inside one long card. */
+.details-card,
+.compare-card {
+  padding: 20px;
+}
+
+/*NAVBAR*/
+.tabbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+.tabbar::-webkit-scrollbar { display: none; }
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tab-item svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.tab-item:hover {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.tab-item.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* =========================
+   PRIMARY DETAILS GRID
+========================= */
+.name-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field .textInput { width: 100%; box-sizing: border-box; }
+
+.input-title {
+  font-size: 10.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* =========================
+   TWO COLUMN (USER / HIT)
+========================= */
+.row.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 0;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.column .label { margin: 0 0 2px; }
+.column .textInput { width: 100%; box-sizing: border-box; }
+
+/* Small uppercase label with a colored status dot — a clean,
+   understated way to mark User vs Hit without relying on borders
+   or background color washes. */
+.column-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.column-tag::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.column-tag.user-tag { color: var(--accent-strong); }
+.column-tag.user-tag::before { background: var(--accent); }
+
+.column-tag.hit-tag { color: var(--red); }
+.column-tag.hit-tag::before { background: var(--red); }
+
+.input-row { display: flex; flex-direction: column; gap: 6px; }
+
+.textInput.input-error,
+.textInput.input-error:focus {
+  border-color: var(--red);
+  background: var(--red-soft);
+}
+
+.textInput.input-error::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+/* =========================
+   AUTOCOMPLETE
+========================= */
+.autocomplete-wrap { position: relative; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  max-height: 180px;
+  overflow-y: auto;
+  display: none;
+  z-index: 30;
+}
+
+.autocomplete-item {
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background 0.12s;
+}
+
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover,
+.autocomplete-item.active { background: var(--accent-soft); color: var(--accent-strong); }
+
+/* =========================
+   MINOR ALERT
+========================= */
+#minorAlert {
+  display: none;
+  background: var(--red-soft);
+  border: 1px solid var(--red);
+  color: var(--red);
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================
+   OFFENSE COUNTRY ROW
+========================= */
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0 10px;
+}
+
+.label-row .label { margin: 0; }
+
+.offense-country-select {
+  background: var(--inset);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+  max-width: 100%;
+}
+
+.offense-country-select:hover,
+.offense-country-select:focus { border-color: var(--accent); }
+
+/* =========================
+   QUICK SIDEBAR (Playbook Search + Father's Name Check)
+   Desktop: pinned alongside the main card, top-aligned with it,
+   and capped to the viewport height so its two internal cards
+   scroll their own content instead of the whole sidebar.
+========================= */
+.quick-sidebar{
+    width:330px;
+    flex-shrink:0;
+
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+
+    box-sizing:border-box;
+
+    /* Keep the sidebar's top edge aligned with the main card
+       even after the page scrolls. */
+    position: sticky;
+    top: 20px;
+
+    /* Never exceed the visible viewport beside the main card */
+    height:calc(100vh - 40px);
+    max-height:calc(100vh - 40px);
+}
+
+.sidebar-card{
+    background:var(--surface);
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:14px;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.10);
+
+    display:flex;
+    flex-direction:column;
+
+    min-width: 0;
+    overflow:hidden;
+}
+
+/* Playbook = flexible, grows to fill remaining space,
+   but yields a smaller floor so Father's Name below it
+   never gets squeezed/cropped. */
+.sidebar-card:first-child{
+    flex:1 1 auto;
+    min-height:160px;
+    max-height: calc(100% - 400px);
+    display:flex;
+    flex-direction:column;
+}
+
+.sidebar-card:first-child .sidebar-inner{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    min-height:0px;
+}
+
+/* Father's Name gets a guaranteed, fixed slice of the sidebar so
+   it never gets squeezed/cropped by the Playbook card above it. */
+.sidebar-card:last-child{
+    flex:0 0 380px;
+    min-height:380px;
+    max-height:380px;
+    display:flex;
+    flex-direction:column;
+}
+
+.playbook-body,
+.father-body{
+    flex:1;
+    overflow-y:auto;
+    min-height:0;
+}
+
+.sidebar-body{
+    flex:1;
+    overflow-y:auto;
+    padding:14px;
+}
+
+.sidebar-inner{
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    min-height: 0;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.sidebar-header-row{
+    display:flex;
+    align-items:center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom:16px;
+}
+
+.sidebar-shift-tag {
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.sidebar-shift-tag.active { color: var(--accent-strong); background: var(--accent-soft); border-color: var(--accent); }
+
+.sidebar-live-row { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+
+.sidebar-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.sidebar-dot.idle { background: var(--muted); }
+.sidebar-dot.live { background: var(--accent); animation: sb-pulse 1.4s infinite; }
+
+@keyframes sb-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--accent-soft); }
+  50%      { box-shadow: 0 0 0 4px transparent; }
+}
+
+.sidebar-live-label { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: var(--muted); }
+.sidebar-live-label.live { color: var(--accent-strong); }
+
+.sidebar-divider { width: 100%; height: 1px; background: var(--border); margin: 9px 0; }
+
+.sidebar-metric { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding: 4px 0; min-width: 0; }
+
+.sidebar-metric-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  flex-shrink: 0;
+}
+
+.sidebar-metric-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.sidebar-metric-value.green { color: var(--accent-strong); }
+.sidebar-metric-value.amber { color: var(--amber); }
+.sidebar-metric-value.mono  { font-family: 'JetBrains Mono', 'SF Mono', monospace; }
+
+.sidebar-metric.stacked { flex-direction: column; align-items: flex-start; gap: 2px; }
+.sidebar-metric.stacked .sidebar-metric-value { font-size: 11px; text-align: left; width: 100%; }
+
+.sidebar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-strong);
+  text-decoration: none;
+  margin-top: 8px;
+  transition: opacity 0.15s;
+}
+
+.sidebar-link svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+.sidebar-link:hover { opacity: 0.75; }
+
+/* =========================
+   FATHER'S NAME CHECK — fields, output, actions
+   (lives inside .quick-sidebar)
+========================= */
+
+.father-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 9px;
+}
+
+.father-field .input-title { font-size: 10px; }
+
+.father-field .textInput {
+  padding: 6px 9px;
+  font-size: 11.5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.father-output {
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--muted);
+  background: var(--inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
+  min-height: 56px;
+  cursor: pointer;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 8px;
+  transition: border-color 0.15s;
+}
+
+.father-output:hover { border-color: var(--border-hover); }
+.father-output.has-content { color: var(--text); border-color: var(--accent); background: var(--surface); }
+.father-output.has-error { color: var(--red); border-color: var(--red); background: var(--red-soft); }
+.father-output.neutral { color: var(--muted); background: var(--surface-alt); }
+
+.father-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.father-actions .selectBtn {
+  font-size: 10.5px;
+  padding: 5px 10px;
+}
+
+.father-actions .copy-hint { font-size: 10px; }
+
+.father-search-wrap{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+}
+
+.father-search-input {
+  width: 100%;
+  background: var(--inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 7px 9px;
+  font-size: 11.5px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  flex-shrink:0;
+  box-sizing: border-box;
+}
+
+.father-search-input:focus { border-color: var(--accent); }
+
+.father-search-dropdown{
+    flex:1;
+    overflow-y:auto;
+    min-height:0;
+}
+
+.father-search-dropdown,
+.father-output{
+    flex:1;
+}
+
+.father-search-dropdown::-webkit-scrollbar{
+    width:6px;
+}
+
+.father-search-dropdown::-webkit-scrollbar-thumb{
+    background:var(--border);
+    border-radius:999px;
+}
+
+.father-search-dropdown::-webkit-scrollbar-thumb:hover{
+    background:var(--accent);
+}
+
+.father-search-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background 0.12s;
+}
+
+.father-search-item:last-child { border-bottom: none; }
+.father-search-item:hover { background: var(--accent-soft); color: var(--accent-strong); }
+
+.fsi-title { flex: 1; line-height: 1.35; min-width: 0; }
+
+.fsi-tag {
+  flex-shrink: 0;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.fsi-tag.standalone { background: rgba(69,160,73,0.15); color: #2f8132; }
+.fsi-tag.supplemental { background: rgba(42,143,214,0.15); color: #1f6fb2; }
+
+.father-search-empty {
+  padding: 10px;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* =========================
+   PLAYBOOK TEMPLATE PREVIEW MODAL
+========================= */
+.pt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.pt-modal-overlay.open { display: flex; }
+
+.pt-modal {
+  width: 100%;
+  max-width: 420px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.pt-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.pt-modal-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.pt-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.pt-modal-close:hover { color: var(--text); }
+
+.pt-modal-template {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 13px;
+  cursor: pointer;
+  white-space: pre-wrap;
+  word-break: break-word;
+  transition: border-color 0.15s;
+}
+
+.pt-modal-template:hover { border-color: var(--accent); }
+
+.pt-modal-note {
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: var(--muted);
+  background: var(--surface-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+
+.pt-modal-footer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* =====================================================================
+   RESPONSIVE BREAKPOINTS
+   Ordered widest → narrowest. Each step below also carries the rules
+   from the steps above it (mobile-last cascade), so keep additive.
+===================================================================== */
+
+/* ---- Tablet / narrow desktop: shrink the sidebar before stacking ---- */
+@media (max-width: 1100px) {
+  .quick-sidebar { width: 280px; }
+}
+
+/* ---- Below this, side-by-side no longer has room: stack sidebar ---- */
+@media (max-width: 900px) {
+  .page-layout {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .quick-sidebar {
+    position: static;
+    width: 100%;
+    order: 2;
+    height: auto;
+    max-height: none;
+  }
+
+  .sidebar-card:first-child {
+    min-height: 320px;
+    max-height: 480px;
+  }
+
+  .sidebar-card:last-child {
+    max-height: none;
+  }
+
+  .name-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---- Small tablet / large phone ---- */
+@media (max-width: 768px) {
+  .name-grid { grid-template-columns: 1fr 1fr; }
+
+  .row.two-columns {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+}
+
+/* ---- Phone: single column everywhere ---- */
+@media (max-width: 640px) {
+  .row.two-columns { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .name-grid { grid-template-columns: 1fr; }
+
+  .label-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .offense-country-select { width: 100%; }
+
+  .sidebar-inner { padding: 14px; }
+
+  .sidebar-card:first-child { min-height: 280px; max-height: 400px; }
+}

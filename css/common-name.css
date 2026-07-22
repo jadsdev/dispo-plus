@@ -1,0 +1,193 @@
+/* =====================================================================
+   COMMON NAME (IDENTITY ANALYSIS) — page-specific styles
+   Load AFTER css/theme.css.
+===================================================================== */
+
+.tabbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+.tabbar::-webkit-scrollbar { display: none; }
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tab-item svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.tab-item:hover {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.tab-item.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.card.split-card {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  overflow: hidden;
+}
+
+.card.id-card {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+@media (max-width: 800px) {
+  .card.split-card { grid-template-columns: 1fr; }
+}
+
+.side { display: flex; flex-direction: column; }
+.side.left { border-right: 1px solid var(--border); }
+
+@media (max-width: 800px) {
+  .side.left { border-right: none; border-bottom: 1px solid var(--border); }
+}
+
+.card-header {
+  padding: 14px 18px;
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.card-header .label { margin: 0; }
+
+.card-body { padding: 18px; }
+
+.fields-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.field-row { display: flex; flex-direction: column; gap: 6px; }
+
+.field-label {
+  font-size: 10.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.duo-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: end;
+}
+
+@media (max-width: 460px) {
+  .duo-row { grid-template-columns: 1fr; }
+}
+
+.duo-row .field-half { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+.output-wrap .output {
+  height: 160px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.output.has-error {
+  color: var(--red);
+  border-color: var(--red);
+  background: var(--red-soft);
+}
+
+.output.has-error .error-text {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.output.neutral {
+  color: var(--muted);
+  background: var(--surface-alt);
+}
+
+.output.neutral .neutral-text {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.dropdown-wrap { position: relative; width: 100%; }
+
+.textInput.input-error,
+.textInput.input-error:focus {
+  border-color: var(--red);
+  background: var(--red-soft);
+}
+
+.textInput.input-error::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+.dropdown-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  max-height: 180px;
+  overflow-y: auto;
+  display: none;
+  z-index: 30;
+}
+
+.autocomplete-item {
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background 0.12s;
+}
+
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover,
+.autocomplete-item.active { background: var(--accent-soft); color: var(--accent-strong); }

@@ -1,0 +1,233 @@
+/* =====================================================================
+   REMISSION — page-specific styles
+   Load AFTER css/theme.css.
+===================================================================== */
+
+.tabbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+.tabbar::-webkit-scrollbar { display: none; }
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tab-item svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.tab-item:hover {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.tab-item.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.container { width: 100%; }
+
+.card.remission-card { padding: 24px; }
+
+.remission-card h1 {
+  margin: 0 0 18px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.remission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .remission-grid { grid-template-columns: 1fr; }
+}
+
+.remission-left { display: flex; flex-direction: column; gap: 14px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+
+select#jurisdiction {
+  width: 100%;
+  background: var(--inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 11px;
+  font-size: 12.5px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+select#jurisdiction:focus { border-color: var(--accent); }
+
+.sentence-row { display: flex; flex-direction: column; gap: 6px; }
+
+.sentence-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.sentence-label::before {
+  content: '';
+  width: 3px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.sentence-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.muted { font-size: 11px; color: var(--muted); }
+
+.summary.valid {
+  border: 1px solid var(--green);
+  background: var(--accent-soft);
+}
+
+.summary.invalid {
+  border: 1px solid var(--red);
+  background: var(--red-soft);
+  opacity: 0.75;
+}
+
+.copy-hint.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* right side dashboard */
+.remission-right { display: flex; flex-direction: column; }
+
+.dashboard-box {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.status {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  background: var(--inset);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  min-height: 20px;
+}
+
+.status.loading { color: var(--muted); }
+.status.typing  { color: var(--text); }
+
+.status.success {
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.status.error {
+  color: var(--red);
+  background: var(--red-soft);
+  border-color: var(--red);
+}
+
+.summary {
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--text);
+  background: var(--inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+#templateOutput,
+#templateOutputCard {
+  cursor: pointer;
+}
+
+#templateOutput.invalid,
+#templateOutputCard.invalid {
+  cursor: not-allowed;
+}
+
+.summary.valid {
+  border: 1px solid var(--green);
+  background: var(--accent-soft);
+}
+
+.summary.invalid {
+  border: 1px solid var(--red);
+  background: var(--red-soft);
+  opacity: 0.75;
+}
+
+/* keep state color on hover instead of falling back to generic accent hover */
+.summary.valid:hover {
+  border-color: var(--green);
+  background: var(--accent-soft);
+}
+
+.summary.invalid:hover {
+  border-color: var(--red);
+  background: var(--red-soft);
+}
+
+.status.neutral {
+  border-color: var(--border);
+  background: var(--inset);
+  color: var(--muted);
+}
+
+.summary.neutral {
+  border: 1px solid var(--border);
+  background: var(--inset);
+  color: var(--muted);
+  opacity: 1;
+}

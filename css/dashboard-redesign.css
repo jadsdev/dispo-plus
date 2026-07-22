@@ -1,0 +1,502 @@
+/* ============================================================
+   SHIFT TRACKER — REDESIGN PATCH
+   Apply this file AFTER your existing CSS (or replace the
+   relevant sections). Everything here overrides the original.
+   ============================================================ */
+
+
+/* ── 1. DESIGN TOKENS ────────────────────────────────────────
+   Replace your :root / variable declarations with these.
+   Key changes:
+   - Flatter blacks (no layered gradients)
+   - 0.5px hairline borders everywhere
+   - Semantic accent palette (green/amber/red only)
+   - Removed blur/glow/box-shadow decoratives
+   ──────────────────────────────────────────────────────────── */
+
+:root {
+  --bg:           #0d0d0d;
+  --surface:      #111111;
+  --card:         #161616;
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.18);
+  --text:         #e8e6e0;
+  --muted:        #6b6a65;        /* replaces --muted2 */
+  --muted2:       #6b6a65;        /* keep for backwards-compat */
+  --accent:       #c8f4e0;
+  --accent-dim:   rgba(200, 244, 224, 0.08);
+  --red:          #f07070;
+  --amber:        #e8a44a;
+  --green:        #7dd4a8;
+}
+
+
+/* ── 2. BODY ─────────────────────────────────────────────────
+   Remove the radial-gradient background — flat black only.
+   ──────────────────────────────────────────────────────────── */
+
+body {
+  background: var(--bg);
+  /* Remove: radial-gradient(...) overlay */
+}
+
+
+/* ── 3. NAVBAR ───────────────────────────────────────────────
+   Slimmer, no blur, hairline border.
+   ──────────────────────────────────────────────────────────── */
+
+.navbar {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.navbar a {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.navbar a:hover {
+  color: var(--accent);
+  transform: none; /* remove translateY bounce */
+}
+
+
+/* ── 4. CARDS ────────────────────────────────────────────────
+   Flat surface, hairline border, no inset glow, no blur.
+   ──────────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 14px;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+}
+
+
+/* ── 5. METRIC BOXES ─────────────────────────────────────────
+   Compact, no shadows, accent border only on hover.
+   ──────────────────────────────────────────────────────────── */
+
+.metricBox {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.metricBox:hover {
+  border-color: var(--border-hover);
+  transform: none;
+  box-shadow: none;
+}
+
+.metricLabel {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metricValue {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+/* ── 6. SHIFT BANNER ─────────────────────────────────────────
+   Same flat treatment.
+   ──────────────────────────────────────────────────────────── */
+
+.shiftBanner {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+}
+
+
+/* ── 7. BUTTONS ──────────────────────────────────────────────
+   Semantic colours only. No translateY on every button.
+   ──────────────────────────────────────────────────────────── */
+
+button {
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 0.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+button:hover {
+  border-color: var(--border-hover);
+  background: rgba(255, 255, 255, 0.04);
+  transform: none; /* remove float effect */
+  box-shadow: none;
+}
+
+/* addBtn → ghost style */
+.addBtn {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+  box-shadow: none;
+}
+
+.addBtn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border);
+  box-shadow: none;
+  transform: none;
+}
+
+/* dangerBtn → semantic red, subtle */
+.dangerBtn {
+  border-color: rgba(240, 112, 112, 0.2);
+  background: transparent;
+  color: var(--red);
+  box-shadow: none;
+}
+
+.dangerBtn:hover {
+  background: rgba(240, 112, 112, 0.08);
+  border-color: var(--red);
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* ── 8. CASE ROW (TABLE REPLACEMENT) ────────────────────────
+   Hairline border, no float on hover, flat bg.
+   ──────────────────────────────────────────────────────────── */
+
+.caseRow {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.caseRow:hover {
+  border-color: var(--border-hover);
+  background: rgba(255, 255, 255, 0.025);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Active case highlight */
+.caseRow.activeRow {
+  border-color: rgba(125, 212, 168, 0.3);
+  background: rgba(125, 212, 168, 0.04);
+}
+
+/* Finished row */
+.caseRow.finished-row {
+  opacity: 0.4;
+}
+
+
+/* ── 9. TABLE ROWS (#rows tr) ────────────────────────────────
+   Mirror the caseRow changes for the HTML table variant.
+   ──────────────────────────────────────────────────────────── */
+
+#rows tr {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+#rows tr:hover {
+  border-color: var(--border-hover);
+  background: rgba(255, 255, 255, 0.025);
+  transform: none;
+  box-shadow: none;
+}
+
+#rows tr.activeRow {
+  border-color: rgba(125, 212, 168, 0.3);
+  box-shadow: none;
+}
+
+#rows td {
+  font-size: 12px;
+}
+
+#rows input,
+#rows select {
+  background: var(--card);
+  border: 0.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+#rows input:focus,
+#rows select:focus {
+  border-color: rgba(200, 244, 224, 0.35);
+  box-shadow: none; /* remove accent-dim glow ring */
+}
+
+
+/* ── 10. ROW ACTION BUTTONS ─────────────────────────────────
+   Semantic: green = start, amber = stop, red = delete.
+   ──────────────────────────────────────────────────────────── */
+
+.startBtn,
+.stopBtn,
+.deleteBtn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  border: 0.5px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.startBtn:hover {
+  border-color: rgba(125, 212, 168, 0.5);
+  color: var(--green);
+  background: rgba(125, 212, 168, 0.07);
+  transform: none;
+}
+
+.stopBtn:hover {
+  border-color: rgba(232, 164, 74, 0.5);
+  color: var(--amber);
+  background: rgba(232, 164, 74, 0.07);
+  transform: none;
+}
+
+.deleteBtn {
+  border-color: rgba(240, 112, 112, 0.2);
+  color: var(--red);
+}
+
+.deleteBtn:hover {
+  background: rgba(240, 112, 112, 0.08);
+  border-color: var(--red);
+}
+
+.startBtn:disabled,
+.stopBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+
+/* ── 11. TOTALS ──────────────────────────────────────────────
+   Match card treatment.
+   ──────────────────────────────────────────────────────────── */
+
+.total-item {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.total-item:hover {
+  border-color: var(--border-hover);
+  transform: none;
+}
+
+.total-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-value {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+/* ── 12. HISTORY ITEMS ───────────────────────────────────────
+   Remove slideX hover transform — it's jarring.
+   ──────────────────────────────────────────────────────────── */
+
+.historyItem {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.historyItem:hover {
+  border-color: var(--border-hover);
+  transform: none; /* remove translateX(4px) */
+}
+
+
+/* ── 13. MODAL ───────────────────────────────────────────────
+   No change needed structurally — just ensure bg matches.
+   ──────────────────────────────────────────────────────────── */
+
+.modal-box {
+  background: var(--card);
+  border: 0.5px solid var(--border);
+}
+
+
+/* ── 14. NAV ARROWS ──────────────────────────────────────────
+   Flat, no box-shadow.
+   ──────────────────────────────────────────────────────────── */
+
+.tab-arrows button {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  box-shadow: none;
+}
+
+.tab-arrows button:hover {
+  border-color: var(--border-hover);
+  color: var(--accent);
+  transform: none;
+}
+
+
+/* ── 15. SHIFT CONTROLS ──────────────────────────────────────
+   Consistent with main button reset.
+   ──────────────────────────────────────────────────────────── */
+
+.shiftControls button,
+.actionRow button {
+  background: transparent;
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+}
+
+.shiftControls button:hover,
+.actionRow button:hover {
+  border-color: var(--border-hover);
+  transform: none;
+}
+
+
+/* ── 16. FOOTER ──────────────────────────────────────────────
+   ──────────────────────────────────────────────────────────── */
+
+.footer {
+  font-size: 11px;
+  color: var(--muted);
+  border-top: 0.5px solid var(--border);
+}
+
+
+/* ── 17. STATUS DOT (NEW UTILITY) ────────────────────────────
+   Add these to your HTML: <span class="dot dot-active"></span>
+   ──────────────────────────────────────────────────────────── */
+
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.dot-active { background: var(--green); }
+.dot-idle   { background: var(--muted); }
+.dot-done   { background: rgba(255, 255, 255, 0.15); }
+
+
+/* ── 18. LIVE BADGE (NEW UTILITY) ────────────────────────────
+   <span class="badge badge-live">On shift</span>
+   ──────────────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 0.5px solid var(--border);
+  color: var(--muted);
+  background: var(--surface);
+}
+
+.badge-live {
+  color: var(--green);
+  border-color: rgba(125, 212, 168, 0.2);
+  background: rgba(125, 212, 168, 0.06);
+}
+
+.badge-live::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+}
+
+
+/* ── 19. SECTION HEADER UTILITY ──────────────────────────────
+   .section-title above groups of rows.
+   ──────────────────────────────────────────────────────────── */
+
+.section-title {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+
+/* ── 20. COLUMN HEADERS (NEW) ────────────────────────────────
+   Add above your .caseGrid:
+   <div class="col-header-row">
+     <span class="col-h">Case</span>
+     <span class="col-h">Type</span>
+     ...
+   </div>
+   ──────────────────────────────────────────────────────────── */
+
+.col-h {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+
+/* ── WHAT TO REMOVE FROM YOUR ORIGINAL CSS ───────────────────
+
+   These properties are safe to delete — they're replaced above:
+
+   - All `backdrop-filter: blur(...)` declarations
+   - All `box-shadow: 0 10px 30px ...` and similar on cards/rows
+   - All `box-shadow: inset 0 1px 0 ...` decorative insets
+   - `background: linear-gradient(145deg, ...)` on .card, .metricBox,
+     .caseRow, .total-item, .historyItem, .addBtn, .dangerBtn
+   - `transform: translateY(-1px)` / `translateX(4px)` on hover states
+   - `radial-gradient(...)` overlay on body background
+   - `.addBtn:active { transform: ... scale(0.98) }` (can keep if desired)
+   - `.metricBox:hover { box-shadow: 0 10px 25px rgba(93,202,165,0.12) }`
+   - `.historyItem:hover { transform: translateX(4px) }`
+
+   ──────────────────────────────────────────────────────────── */
