@@ -16,7 +16,7 @@ function changeHistoryPage(dir) {
 }
 
 (function highlightActiveTab() {
-  const current = window.location.pathname.split("/").pop() || "index.html";
+  const current = window.location.pathname.split("/").pop() || "../index.html";
   document.querySelectorAll(".tab-item").forEach(tab => {
     if (tab.dataset.page === current) tab.classList.add("active");
   });

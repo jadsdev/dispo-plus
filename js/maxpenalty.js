@@ -31,7 +31,7 @@ setInterval(updateTimes, 1000);
 updateTimes();
 
 (function highlightActiveTab() {
-  const current = window.location.pathname.split("/").pop() || "index.html";
+  const current = window.location.pathname.split("/").pop() || "../../index.html";
   document.querySelectorAll(".tab-item").forEach(tab => {
     if (tab.dataset.page === current) {
       tab.classList.add("active");
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentPage = window.location.pathname.split("/").pop();
   document.querySelectorAll(".navbar a").forEach(link => {
     const href = link.getAttribute("href");
-    if(href === currentPage || (currentPage === "" && href === "index.html")){
+    if(href === currentPage || (currentPage === "" && href === "../index.html")){
       link.classList.add("active");
     }
   });
