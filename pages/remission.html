@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link rel="icon" type="image/x-icon" href="icon/dispoicon-dplus.ico">
-<title>dispo+ — Image to PDF</title>
+  <link rel="icon" type="image/x-icon" href="dispoicon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="icon/dispoicon-dplus.ico">
+  <title>dispo+ — Remission</title>
 
-<script>
-  (function () {
-    var t = localStorage.getItem("dispo-theme") === "dark" ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", t);
-  })();
-</script>
+  <script>
+    (function () {
+      var t = localStorage.getItem("dispo-theme") === "dark" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/jpgpdf.css">
-
-<!-- jsPDF (CDN, no build step needed) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/remission.css">
 </head>
 
 <body>
@@ -99,7 +97,7 @@
 
   <a href="index.html" class="topbar-brand" style="text-decoration:none;">
   dispo<span>+</span>
-  <span class="topbar-page-label">Image to PDF</span>
+  <span class="topbar-page-label">Remission</span>
 </a>
 
   <div class="topbar-right">
@@ -111,7 +109,6 @@
   </div>
 </header>
 
-<!-- ============ TAB BAR ============ -->
 <nav class="tabbar" id="tabbar">
   <a href="index.html" class="tab-item" data-page="index.html">
     <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>
@@ -150,59 +147,126 @@
 <div class="page-wrap">
 
   <div class="page-header">
-    <span class="page-eyebrow">Export</span>
-    <h1 class="page-title">Image to PDF</h1>
-    <p class="page-subtitle">Paste, drop, or upload images. Add a caption to each, then export them as a single PDF.</p>
+    <span class="page-eyebrow">Calculator</span>
+    <h1 class="page-title">Remission</h1>
+    <p class="page-subtitle">Jurisdiction rate lookup, sentence and release date calculation.</p>
   </div>
 
-  <div class="card">
+  <div class="container">
 
-    <div class="controls-bar">
-      <div class="control-group">
-        <span class="input-title">Layout</span>
-        <select id="layoutSelect" class="textInput">
-          <option value="2">2 per page</option>
-          <option value="4">4 per page</option>
-          <option value="6" selected>6 per page</option>
-          <option value="9">9 per page</option>
-        </select>
-      </div>
+    <div class="card remission-card">
 
-      <div class="control-group grow">
-        <span class="input-title">File name</span>
-        <input type="text" id="filenameInput" class="textInput" placeholder="" value="">
-      </div>
+      <div class="remission-grid">
 
-      <div class="control-actions">
-        <button id="clearAllBtn" class="selectBtn clear-btn" type="button">Clear all</button>
-        <button id="generateBtn" class="primary-btn" type="button" disabled>Generate PDF</button>
-      </div>
-    </div>
+        <!-- LEFT SIDE (INPUTS) -->
+        <div class="remission-left">
 
-    <div id="dropzone" class="dropzone" tabindex="0">
-      <input type="file" id="fileInput" accept="image/*" multiple hidden>
-      <div class="dropzone-content">
-        <div class="dropzone-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M12 16V4M12 4L7 9M12 4L17 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M4 16V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <div class="field">
+            <div class="label">Jurisdiction</div>
+            <select id="jurisdiction"></select>
+          </div>
+
+          <div class="sentence-row">
+            <div class="sentence-label">Sentence</div>
+            <div class="sentence-inputs">
+              <div class="unit-field">
+                <input type="number" id="sentenceYears" class="textInput" placeholder="0" min="0" step="1" inputmode="numeric">
+                <span class="unit-suffix">yrs</span>
+              </div>
+              <div class="unit-field">
+                <input type="number" id="sentenceMonths" class="textInput" placeholder="0" min="0" max="11" step="1" inputmode="numeric">
+                <span class="unit-suffix">mos</span>
+              </div>
+              <div class="unit-field">
+                <input type="text" id="totalMonths" class="textInput totalInput" placeholder="0" disabled>
+                <span class="unit-suffix">total mos</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="label">Offense</div>
+            <input type="text" id="offense" class="textInput" placeholder="e.g. Fraud / Theft">
+          </div>
+
+          <div class="field">
+            <div class="label">Sentence Start Date</div>
+            <input 
+              type="text" 
+              id="startDate" 
+              class="textInput"
+              placeholder="dd/mm/yyyy"
+              maxlength="10"
+              inputmode="numeric">
+          </div>
+          
+          <div class="field">
+            <div class="label">ID Issuing Date</div>
+            <input 
+              type="text" 
+              id="idIssueDate" 
+              class="textInput"
+              placeholder="dd/mm/yyyy"
+              maxlength="10"
+              inputmode="numeric">
+          </div>
+
+          <div class="field">
+            <div class="label">Release Date</div>
+            <input type="text" id="releaseDate" class="textInput" readonly>
+          </div>
+          <span id="sentencePreview" class="muted"></span>
+
+          <button id="clearAllBtn" class="selectBtn clear-btn" type="button">Clear All Fields</button>
+
         </div>
-        <p class="dropzone-title">Drop images here, click to browse, or paste with Ctrl+V</p>
-        <p class="dropzone-sub">JPG, PNG, WEBP, GIF supported</p>
+
+        <!-- RIGHT SIDE (DASHBOARD BOX) -->
+        <div class="remission-right">
+          <div class="dashboard-box">
+
+            <div class="field">
+              <div class="label">Status</div>
+              <div class="status" id="status">Hit is no longer in prison</div>
+            </div>
+
+            <div class="field">
+              <div class="label">Summary</div>
+              <div class="summary" id="summary"></div>
+            </div>
+
+            <div class="field">
+              <div class="label">Jail Term (Date Today)</div>
+              <div class="summary" id="templateOutput"></div>
+              <span class="copy-hint" id="copyHintToday">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                click to copy
+              </span>
+            </div>
+            
+            <div class="field">
+              <div class="label">Jail Term (Card Issuing Date)</div>
+              <div class="summary" id="templateOutputCard"></div>
+              <span class="copy-hint" id="copyHintCard">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                click to copy
+              </span>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-    </div>
 
-    <div id="emptyState" class="empty-state">
-      <p>No images added yet.</p>
     </div>
-
-    <div id="imageGrid" class="image-grid" hidden></div>
 
   </div>
 
 </div>
 
 <div class="tab-arrows">
-  <button class="arrow left" onclick="goPrev()">‹</button>
-  <button class="arrow right" onclick="goNext()">›</button>
+  <button onclick="goPrev()">‹</button>
+  <button onclick="goNext()">›</button>
 </div>
 
 <div id="toast" class="toast"></div>
@@ -211,8 +275,8 @@
   © 2026 dispo+. All Rights Reserved.
 </footer>
 
-<script src="js/jpgpdf.js"></script>
-<script src="js/theme.js"></script>
+<script src="../js/remission.js"></script>
+<script src="../js/theme.js"></script>
 
 </body>
 </html>

@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/x-icon" href="dispoicon.png">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="icon" type="image/x-icon" href="icon/dispoicon-dplus.ico">
-  <title>dispo+ — Screening</title>
+ <link rel="icon" type="image/x-icon" href="icon/dispoicon-dplus.ico">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dispo+ — Potential Match</title>
 
-  <script>
-    (function () {
-      var t = localStorage.getItem("dispo-theme") === "dark" ? "dark" : "light";
-      document.documentElement.setAttribute("data-theme", t);
-    })();
-  </script>
+<script>
+  (function () {
+    var t = localStorage.getItem("dispo-theme") === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/common-name.css">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/potential-match.css">
+<link rel="stylesheet" href="../css/risk-sidebar.css">
 </head>
 
 <body>
@@ -97,7 +97,7 @@
 
   <a href="index.html" class="topbar-brand" style="text-decoration:none;">
   dispo<span>+</span>
-  <span class="topbar-page-label">Screening</span>
+  <span class="topbar-page-label">Potential Match</span>
 </a>
 
   <div class="topbar-right">
@@ -147,163 +147,160 @@
 <div class="page-wrap">
 
   <div class="page-header">
-    <span class="page-eyebrow">Screening</span>
-    <h1 class="page-title">Identity Analysis</h1>
-    <p class="page-subtitle">Common name frequency assessment and father's name mismatch review.</p>
+    <span class="page-eyebrow">Alerts</span>
+    <h1 class="page-title">Potential Match</h1>
+    <p class="page-subtitle">Case-level match review and disposition support.</p>
   </div>
 
-  <div class="card split-card">
+  <!-- PAGE LAYOUT: main col + risk sidebar -->
+  <div class="page-layout">
 
-    <!-- LEFT SIDE -->
-    <div class="side left">
+    <!-- ── MAIN COLUMN ── -->
+    <div class="main-col">
 
-      <div class="card-header">
-        <span class="label">Common Name</span>
-      </div>
+      <div class="card">
+        <div class="label">Match Factors</div>
 
-      <div class="card-body">
-        <div class="fields-block">
+        <div class="matchGrid">
 
-          <div class="field-row duo-row">
-            <div class="field-half">
-              <span class="field-label">Given Name:</span>
-              <input id="givenName" class="textInput" placeholder="e.g. Muhammad">
-            </div>
+          <div class="matchRow">
+            <span class="input-title">Name:</span>
+            <input id="nameValue" class="textInput" placeholder="Enter Name">
 
-            <div class="field-half">
-              <span class="field-label">Middle Name (optional):</span>
-              <input id="middleName" class="textInput" placeholder="e.g. Khan">
+            <div class="radioGroup">
+              <label><input type="radio" name="nameMatch" value="match"> Match</label>
+              <label><input type="radio" name="nameMatch" value="nomatch"> No Match</label>
             </div>
           </div>
 
-          <div class="field-row">
-            <span class="field-label">Surname:</span>
-            <input id="surname" class="textInput" placeholder="e.g. Ali">
+          <div class="matchRow">
+            <span class="input-title">Gender:</span>
+            <input id="genderValue" class="textInput" placeholder="Enter Gender">
+
+            <div class="radioGroup">
+              <label><input type="radio" name="genderMatch" value="match"> Match</label>
+              <label><input type="radio" name="genderMatch" value="nomatch"> No Match</label>
+            </div>
           </div>
 
-          <div class="field-row">
-            <span class="field-label">Jurisdiction:</span>
-            <div class="dropdown-wrap">
-              <input id="location" class="textInput" placeholder="e.g. Pakistan" autocomplete="off">
-              <div id="jurisdictionDropdown" class="dropdown-list"></div>
+          <div class="matchRow">
+            <span class="input-title">Citizenship:</span>
+            <input id="citizenshipValue" class="textInput" placeholder="Enter Citizenship">
+
+            <div class="radioGroup">
+              <label><input type="radio" name="citizenshipMatch" value="match"> Match</label>
+              <label><input type="radio" name="citizenshipMatch" value="nomatch"> No Match</label>
+            </div>
+          </div>
+
+          <div class="matchRow">
+            <span class="input-title">Residency:</span>
+            <input id="residencyValue" class="textInput" placeholder="Enter Residency">
+
+            <div class="radioGroup">
+              <label><input type="radio" name="residencyMatch" value="match"> Match</label>
+              <label><input type="radio" name="residencyMatch" value="nomatch"> No Match</label>
             </div>
           </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="label">Risk Rating</div>
+
+        <div class="matchRow">
+          <span style="color:var(--muted);font-size:13px;">Select Risk Rating:</span>
+
+          <div class="radioGroup">
+            <label>
+              <input type="radio" name="riskRating" value="Low">
+              Low
+            </label>
+
+            <label>
+              <input type="radio" name="riskRating" value="Medium">
+              Medium
+            </label>
+
+            <label>
+              <input type="radio" name="riskRating" value="High">
+              High
+            </label>
+          </div>
+        </div>
+
+        <div class="label">Fillers</div>
+        <div class="selectionGrid" id="pmFillers"></div>
 
         <div class="output-wrap">
-          <div class="output" id="commonOutput" onclick="copyCommon()">Template will appear here.</div>
+          <div id="output" class="output" onclick="copyText()">
+            Template will appear here.
+          </div>
 
           <div class="btn-row">
-            <button id="clearCommon" class="selectBtn clear-btn">Clear Fields</button>
+            <button id="clearAll" class="selectBtn clear-btn">
+              Clear Fields
+            </button>
           </div>
-          <span class="copy-hint">
-            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+
+          <span class="copy-hint" id="copyHint">
+            <svg viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
             click to copy
           </span>
         </div>
+
       </div>
-    </div>
-
-    <!-- RIGHT SIDE -->
-    <div class="side right">
-
-      <div class="card-header">
-        <span class="label">Father's Name Mismatch</span>
-      </div>
-
-      <div class="card-body">
-        <div class="fields-block">
-          <div class="field-row">
-            <span class="field-label">Father's name (user):</span>
-            <input id="fatherUser" class="textInput" placeholder="e.g. Ahmad Khan">
-          </div>
-
-          <div class="field-row">
-            <span class="field-label">Father's name (hit):</span>
-            <input id="fatherHit" class="textInput" placeholder="e.g. Rahim Khan">
-          </div>
-
-          <div class="field-row">
-            <span class="field-label">Links (if applicable):</span>
-            <input id="fatherLinks" class="textInput" placeholder="e.g. https://example.com">
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="output-wrap">
-          <div class="output" id="fatherOutput" onclick="copyFather()">Template will appear here.</div>
-
-          <div class="btn-row">
-            <button id="clearFather" class="selectBtn clear-btn">Clear Fields</button>
-          </div>
-          <span class="copy-hint">
-            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            click to copy
-          </span>
-        </div>
-      </div>
+      <!-- ── END CARD ── -->
 
     </div>
+    <!-- ── END MAIN COLUMN ── -->
+
+    <!-- ── RISK RATING SIDEBAR ── -->
+    <aside class="risk-sidebar" id="riskSidebar">
+
+      <button class="sidebar-toggle" id="riskSidebarToggle" aria-label="Toggle risk rating panel">
+        <svg id="riskToggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+      <div class="sidebar-inner risk-sidebar-inner" id="riskSidebarInner">
+
+        <div class="sidebar-header-row" id="riskSidebarHeader">
+          <span class="label" style="margin: 0;">Risk Rating Reference</span>
+        </div>
+
+        <div class="risk-search-wrap">
+          <input id="riskSearch" class="risk-search-input" placeholder="Search reason...">
+        </div>
+
+        <div class="risk-list" id="riskList"></div>
+
+      </div>
+    </aside>
+    <!-- ── END SIDEBAR ── -->
+
   </div>
-
-  <div class="card id-card">
-    <div class="card-header">
-      <span class="label">ID Number Mismatch</span>
-    </div>
-
-    <div class="card-body">
-      <div class="fields-block">
-        <div class="field-row">
-          <span class="field-label">User ID number:</span>
-          <input id="userIdNumber" class="textInput" placeholder="e.g. 1234567890">
-        </div>
-
-        <div class="field-row">
-          <span class="field-label">Hit ID number:</span>
-          <input id="hitIdNumber" class="textInput" placeholder="e.g. 0987654321">
-        </div>
-
-        <div class="field-row">
-          <span class="field-label">Type of ID:</span>
-          <input id="idTypeMismatch" class="textInput" placeholder="e.g. Passport, CNIC, NRIC">
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="output-wrap">
-        <div class="output" id="idMismatchOutput" onclick="copyIdMismatch()">Template will appear here.</div>
-
-        <div class="btn-row">
-          <button id="clearIdMismatch" class="selectBtn clear-btn">Clear Fields</button>
-        </div>
-        <span class="copy-hint">
-          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          click to copy
-        </span>
-      </div>
-    </div>
-  </div>
+  <!-- END PAGE LAYOUT -->
 
 </div>
-
-<div id="toast" class="toast"></div>
-
-<script src="js/common-name-data.js"></script>
-<script src="js/common-name.js"></script>
-<script src="js/theme.js"></script>
 
 <div class="tab-arrows">
   <button class="arrow left" onclick="goPrev()">‹</button>
   <button class="arrow right" onclick="goNext()">›</button>
 </div>
 
+<div id="toast" class="toast"></div>
+
 <footer class="footer">
   © 2026 dispo+. All Rights Reserved.
 </footer>
+
+<script src="../js/potential-match.js"></script>
+<script src="../js/risk-data.js"></script>
+<script src="../js/risk-sidebar-sync.js"></script>
+<script src="../js/theme.js"></script>
 
 </body>
 </html>
