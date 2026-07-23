@@ -19,6 +19,9 @@ The application provides reusable templates, automated calculations, and workflo
 ## ✨ Features
 
 - ✅ Modern responsive interface
+- 🔐 User authentication with Supabase
+- 👤 Secure login and logout
+- 💾 Persistent user sessions
 - 🌙 Dark mode support
 - 📋 One-click copy to clipboard
 - 💾 Automatic local storage saving
@@ -38,7 +41,10 @@ The application provides reusable templates, automated calculations, and workflo
 - HTML5
 - CSS3
 - JavaScript (ES6+)
-- Local Storage API
+- Supabase (Authentication & Database)
+- Git
+- GitHub
+- LocalStorage API
 
 ---
 
@@ -84,26 +90,10 @@ No installation or build process is required.
 
 ### Home
 
-> Add screenshot here
+> Login Feature
 
 ```
-images/home.png
-```
-
-### Template Generator
-
-> Add screenshot here
-
-```
-images/template.png
-```
-
-### Common Name Checker
-
-> Add screenshot here
-
-```
-images/common-name.png
+screenshots/loginsc.png
 ```
 
 ---
