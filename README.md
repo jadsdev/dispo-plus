@@ -117,7 +117,7 @@ Dispo+ can be used for:
 - [x] Maximum Penalty Calculator
 - [x] Father's Name Mismatch
 - [ ] Database Integration
-- [ ] User Authentication
+- [x] User Authentication
 - [ ] Cloud Sync
 - [ ] AI-assisted Disposition Suggestions
 - [ ] Multi-user Collaboration
