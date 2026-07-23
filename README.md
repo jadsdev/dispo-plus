@@ -88,13 +88,9 @@ No installation or build process is required.
 
 ## 📸 Screenshots
 
-### Home
+## 🔐 Login Feature
 
-> Login Feature
-
-```
-screenshots/loginsc.png
-```
+![Login Screen](screenshots/loginsc.png)
 
 ---
 
