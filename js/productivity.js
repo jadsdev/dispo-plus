@@ -226,6 +226,13 @@ function endShift() {
   localStorage.removeItem(STORAGE_KEY);        // clear current session state
   updateShiftUI();
 
+  // Push the now-cleared state to Supabase right away (don't wait for
+  // the 60s interval) so a stale in-progress shift can't get pulled
+  // back down on this or another device.
+  if (typeof window.dispoPushSnapshotNow === "function") {
+    window.dispoPushSnapshotNow();
+  }
+
   const sessionEl = document.querySelector(".activeSessionMini");
 if (sessionEl) {
   sessionEl.classList.remove("live-on", "live-dot");
@@ -1245,6 +1252,10 @@ function clearAllHistory() {
   }
 
   localStorage.removeItem(HISTORY_KEY);
+
+  if (typeof window.dispoPushSnapshotNow === "function") {
+    window.dispoPushSnapshotNow();
+  }
 
   const container = document.getElementById("historyList");
   if (container) container.innerHTML = "";
