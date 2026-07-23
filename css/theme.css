@@ -952,71 +952,46 @@ button.primary-btn:active { transform: scale(0.97); }
 
 .login-switch-link:hover { text-decoration: underline; }
 
-.signup-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--overlay);
-  display: flex;
+.login-view {
+  display: none;
+}
+
+.login-view.active {
+  display: block;
+  animation: loginViewIn 0.22s var(--ease-out);
+}
+
+@keyframes loginViewIn {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.login-back-link {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s var(--ease);
-  z-index: 200;
-}
-
-.signup-modal-overlay.open { opacity: 1; pointer-events: auto; }
-
-.signup-modal {
-  width: 100%;
-  max-width: 400px;
-  max-height: 90vh;
-  overflow-y: auto;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
-  padding: 26px 24px;
-  transform: translateY(14px) scale(0.97);
-  transition: transform 0.22s var(--ease-out);
-}
-
-.signup-modal-overlay.open .signup-modal {
-  transform: translateY(0) scale(1);
-}
-
-.signup-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-}
-
-.signup-modal-title {
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: -0.2px;
-  color: var(--text);
-}
-
-.signup-modal-close {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  background: var(--inset);
-  border: 1px solid var(--border);
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 16px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--muted);
   cursor: pointer;
-  transition: border-color 0.15s var(--ease), color 0.15s var(--ease);
 }
 
-.signup-modal-close:hover { border-color: var(--border-hover); color: var(--text); }
-.signup-modal-close svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+.login-back-link svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.login-back-link:hover { color: var(--accent-strong); }
 
 .login-field-row {
   display: grid;

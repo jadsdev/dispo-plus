@@ -51,90 +51,106 @@ html:not(.checked-session)::after{
 
 <body>
 
+<!-- ============ TOPBAR ============ -->
+<header class="topbar">
+  <a href="index.html" class="topbar-brand" style="text-decoration:none;">
+    dispo<span>+</span>
+    <span class="topbar-page-label">Login</span>
+  </a>
+
+  <div class="topbar-right">
+    <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle theme">
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
 <div class="login-wrap">
   <div class="login-card">
-    <div class="login-logo">dispo<span>+</span></div>
-    <p class="login-subtitle">Sign in to continue</p>
 
-    <!-- ============ SIGN IN (default view) ============ -->
-    <form id="signInForm" class="login-form active">
-      <div class="login-field">
-        <label for="signInEmail">Email</label>
-        <input type="email" id="signInEmail" class="textInput" placeholder="you@company.com" autocomplete="username" required>
+    <!-- ============ SIGN IN VIEW ============ -->
+    <div id="signInView" class="login-view active">
+      <div class="login-logo">dispo<span>+</span></div>
+      <p class="login-subtitle">Sign in to continue</p>
+
+      <form id="signInForm">
+        <div class="login-field">
+          <label for="signInEmail">Email</label>
+          <input type="email" id="signInEmail" class="textInput" placeholder="you@company.com" autocomplete="username" required>
+        </div>
+
+        <div class="login-field">
+          <label for="signInPassword">Password</label>
+          <input type="password" id="signInPassword" class="textInput" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+
+        <button type="submit" id="signInBtn" class="login-submit">Log In</button>
+
+        <div id="signInError" class="login-error"></div>
+      </form>
+
+      <div class="login-switch-row">
+        New here? <button type="button" id="openSignUpBtn" class="login-switch-link">Create an account</button>
       </div>
+    </div>
 
-      <div class="login-field">
-        <label for="signInPassword">Password</label>
-        <input type="password" id="signInPassword" class="textInput" placeholder="••••••••" autocomplete="current-password" required>
-      </div>
+    <!-- ============ SIGN UP VIEW ============ -->
+    <div id="signUpView" class="login-view">
+      <button type="button" id="backToSignInBtn" class="login-back-link">
+        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Back to Sign In
+      </button>
 
-      <button type="submit" id="signInBtn" class="login-submit">Log In</button>
+      <div class="login-logo">dispo<span>+</span></div>
+      <p class="login-subtitle">Create your agent account</p>
 
-      <div id="signInError" class="login-error"></div>
-    </form>
+      <form id="signUpForm">
+        <div class="login-field-row">
+          <div class="login-field">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" class="textInput" placeholder="Aaron" autocomplete="given-name" required>
+          </div>
 
-    <div class="login-switch-row">
-      New here? <button type="button" id="openSignUpBtn" class="login-switch-link">Create an account</button>
+          <div class="login-field">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" class="textInput" placeholder="Dela Cruz" autocomplete="family-name" required>
+          </div>
+        </div>
+
+        <div class="login-field">
+          <label for="gender">Gender</label>
+          <select id="gender" class="textInput" required>
+            <option value="" disabled selected>Select...</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+
+        <div class="login-field">
+          <label for="signUpEmail">Email</label>
+          <input type="email" id="signUpEmail" class="textInput" placeholder="you@company.com" autocomplete="username" required>
+        </div>
+
+        <div class="login-field">
+          <label for="signUpPassword">Password</label>
+          <input type="password" id="signUpPassword" class="textInput" placeholder="At least 6 characters" autocomplete="new-password" minlength="6" required>
+        </div>
+
+        <button type="submit" id="signUpBtn" class="login-submit">Create Account</button>
+
+        <div id="signUpError" class="login-error"></div>
+        <div id="signUpSuccess" class="login-success"></div>
+      </form>
     </div>
 
     <p class="login-footer-note">dispo+ · internal screening toolkit</p>
   </div>
 </div>
 
-<!-- ============ SIGN UP MODAL ============ -->
-<div class="signup-modal-overlay" id="signUpModalOverlay">
-  <div class="signup-modal">
-
-    <div class="signup-modal-header">
-      <span class="signup-modal-title">Create Account</span>
-      <button type="button" id="closeSignUpBtn" class="signup-modal-close" aria-label="Close">
-        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-
-    <form id="signUpForm">
-      <div class="login-field-row">
-        <div class="login-field">
-          <label for="firstName">First Name</label>
-          <input type="text" id="firstName" class="textInput" placeholder="Aaron" autocomplete="given-name" required>
-        </div>
-
-        <div class="login-field">
-          <label for="lastName">Last Name</label>
-          <input type="text" id="lastName" class="textInput" placeholder="Dela Cruz" autocomplete="family-name" required>
-        </div>
-      </div>
-
-      <div class="login-field">
-        <label for="gender">Gender</label>
-        <select id="gender" class="textInput" required>
-          <option value="" disabled selected>Select...</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-          <option value="Prefer not to say">Prefer not to say</option>
-        </select>
-      </div>
-
-      <div class="login-field">
-        <label for="signUpEmail">Email</label>
-        <input type="email" id="signUpEmail" class="textInput" placeholder="you@company.com" autocomplete="username" required>
-      </div>
-
-      <div class="login-field">
-        <label for="signUpPassword">Password</label>
-        <input type="password" id="signUpPassword" class="textInput" placeholder="At least 6 characters" autocomplete="new-password" minlength="6" required>
-      </div>
-
-      <button type="submit" id="signUpBtn" class="login-submit">Create Account</button>
-
-      <div id="signUpError" class="login-error"></div>
-      <div id="signUpSuccess" class="login-success"></div>
-    </form>
-
-  </div>
-</div>
-
+<script src="js/theme.js"></script>
 <script>
 (function () {
   if (!window.SUPABASE_URL || window.SUPABASE_URL === "YOUR_SUPABASE_PROJECT_URL") {
@@ -175,31 +191,22 @@ html:not(.checked-session)::after{
     document.documentElement.classList.add("checked-session");
   });
 
-  // ============ SIGN UP MODAL open/close ============
-  var overlay = document.getElementById("signUpModalOverlay");
-  var openBtn = document.getElementById("openSignUpBtn");
-  var closeBtn = document.getElementById("closeSignUpBtn");
+  // ============ VIEW SWITCHING (Sign In <-> Sign Up) ============
+  var signInView = document.getElementById("signInView");
+  var signUpView = document.getElementById("signUpView");
 
-  function openModal() {
-    overlay.classList.add("open");
-    document.body.style.overflow = "hidden";
+  function showSignUp() {
+    signInView.classList.remove("active");
+    signUpView.classList.add("active");
   }
 
-  function closeModal() {
-    overlay.classList.remove("open");
-    document.body.style.overflow = "";
+  function showSignIn() {
+    signUpView.classList.remove("active");
+    signInView.classList.add("active");
   }
 
-  openBtn.addEventListener("click", openModal);
-  closeBtn.addEventListener("click", closeModal);
-
-  overlay.addEventListener("click", function (e) {
-    if (e.target === overlay) closeModal();
-  });
-
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
-  });
+  document.getElementById("openSignUpBtn").addEventListener("click", showSignUp);
+  document.getElementById("backToSignInBtn").addEventListener("click", showSignIn);
 
   // ============ SIGN IN ============
   var signInForm = document.getElementById("signInForm");
