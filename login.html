@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>dispo+ — Login</title>
+
+<link rel="icon" type="image/x-icon" href="icon/dispoicon-dplus.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/theme.css">
+
+<script>
+(function(){
+    const theme = localStorage.getItem("dispo-theme") === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", theme);
+})();
+</script>
+
+<!-- If already logged in, skip straight past this page -->
+<style>
+html:not(.checked-session) body{visibility:hidden}
+html:not(.checked-session)::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  z-index:9998;
+}
+html:not(.checked-session)::after{
+  content:"";
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:38px;
+  height:38px;
+  margin:-19px 0 0 -19px;
+  border:3px solid var(--border);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:dispoAuthSpin .7s linear infinite;
+  z-index:9999;
+}
+@keyframes dispoAuthSpin{ to { transform:rotate(360deg); } }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+</head>
+
+<body>
+
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">dispo<span>+</span></div>
+    <p class="login-subtitle">Sign in to continue</p>
+
+    <!-- ============ SIGN IN (default view) ============ -->
+    <form id="signInForm" class="login-form active">
+      <div class="login-field">
+        <label for="signInEmail">Email</label>
+        <input type="email" id="signInEmail" class="textInput" placeholder="you@company.com" autocomplete="username" required>
+      </div>
+
+      <div class="login-field">
+        <label for="signInPassword">Password</label>
+        <input type="password" id="signInPassword" class="textInput" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+
+      <button type="submit" id="signInBtn" class="login-submit">Log In</button>
+
+      <div id="signInError" class="login-error"></div>
+    </form>
+
+    <div class="login-switch-row">
+      New here? <button type="button" id="openSignUpBtn" class="login-switch-link">Create an account</button>
+    </div>
+
+    <p class="login-footer-note">dispo+ · internal screening toolkit</p>
+  </div>
+</div>
+
+<!-- ============ SIGN UP MODAL ============ -->
+<div class="signup-modal-overlay" id="signUpModalOverlay">
+  <div class="signup-modal">
+
+    <div class="signup-modal-header">
+      <span class="signup-modal-title">Create Account</span>
+      <button type="button" id="closeSignUpBtn" class="signup-modal-close" aria-label="Close">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <form id="signUpForm">
+      <div class="login-field-row">
+        <div class="login-field">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" class="textInput" placeholder="Aaron" autocomplete="given-name" required>
+        </div>
+
+        <div class="login-field">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" class="textInput" placeholder="Dela Cruz" autocomplete="family-name" required>
+        </div>
+      </div>
+
+      <div class="login-field">
+        <label for="gender">Gender</label>
+        <select id="gender" class="textInput" required>
+          <option value="" disabled selected>Select...</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+        </select>
+      </div>
+
+      <div class="login-field">
+        <label for="signUpEmail">Email</label>
+        <input type="email" id="signUpEmail" class="textInput" placeholder="you@company.com" autocomplete="username" required>
+      </div>
+
+      <div class="login-field">
+        <label for="signUpPassword">Password</label>
+        <input type="password" id="signUpPassword" class="textInput" placeholder="At least 6 characters" autocomplete="new-password" minlength="6" required>
+      </div>
+
+      <button type="submit" id="signUpBtn" class="login-submit">Create Account</button>
+
+      <div id="signUpError" class="login-error"></div>
+      <div id="signUpSuccess" class="login-success"></div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  if (!window.SUPABASE_URL || window.SUPABASE_URL === "YOUR_SUPABASE_PROJECT_URL") {
+    document.documentElement.classList.add("checked-session");
+    var err = document.getElementById("signInError");
+    err.textContent = "Login isn't configured yet — supabase-config.js needs your project URL and anon key.";
+    err.classList.add("show");
+    return;
+  }
+
+  var client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+  function getRedirectTarget() {
+    var params = new URLSearchParams(location.search);
+    var redirect = params.get("redirect");
+    if (redirect) {
+      // redirect is a bare filename like "productivity.html?x=1", pages live in /pages/
+      return "pages/" + redirect;
+    }
+    return "index.html";
+  }
+
+  // Safety net: never leave this page invisible for more than 2.5s.
+  var revealTimeout = setTimeout(function () {
+    document.documentElement.classList.add("checked-session");
+  }, 2500);
+
+  // If a session already exists, skip the login form entirely.
+  client.auth.getSession().then(function (res) {
+    clearTimeout(revealTimeout);
+    if (res.data && res.data.session) {
+      location.replace(getRedirectTarget());
+      return;
+    }
+    document.documentElement.classList.add("checked-session");
+  }).catch(function () {
+    clearTimeout(revealTimeout);
+    document.documentElement.classList.add("checked-session");
+  });
+
+  // ============ SIGN UP MODAL open/close ============
+  var overlay = document.getElementById("signUpModalOverlay");
+  var openBtn = document.getElementById("openSignUpBtn");
+  var closeBtn = document.getElementById("closeSignUpBtn");
+
+  function openModal() {
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  openBtn.addEventListener("click", openModal);
+  closeBtn.addEventListener("click", closeModal);
+
+  overlay.addEventListener("click", function (e) {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
+  });
+
+  // ============ SIGN IN ============
+  var signInForm = document.getElementById("signInForm");
+  var signInBtn = document.getElementById("signInBtn");
+  var signInError = document.getElementById("signInError");
+
+  signInForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    signInError.classList.remove("show");
+    signInBtn.disabled = true;
+    signInBtn.textContent = "Logging in…";
+
+    var email = document.getElementById("signInEmail").value.trim();
+    var password = document.getElementById("signInPassword").value;
+
+    client.auth.signInWithPassword({ email: email, password: password })
+      .then(function (res) {
+        if (res.error) {
+          signInError.textContent = res.error.message || "Login failed. Check your email and password.";
+          signInError.classList.add("show");
+          signInBtn.disabled = false;
+          signInBtn.textContent = "Log In";
+          return;
+        }
+        location.href = getRedirectTarget();
+      })
+      .catch(function () {
+        signInError.textContent = "Something went wrong. Please try again.";
+        signInError.classList.add("show");
+        signInBtn.disabled = false;
+        signInBtn.textContent = "Log In";
+      });
+  });
+
+  // ============ SIGN UP ============
+  var signUpForm = document.getElementById("signUpForm");
+  var signUpBtn = document.getElementById("signUpBtn");
+  var signUpError = document.getElementById("signUpError");
+  var signUpSuccess = document.getElementById("signUpSuccess");
+
+  signUpForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    signUpError.classList.remove("show");
+    signUpSuccess.classList.remove("show");
+    signUpBtn.disabled = true;
+    signUpBtn.textContent = "Creating account…";
+
+    var firstName = document.getElementById("firstName").value.trim();
+    var lastName = document.getElementById("lastName").value.trim();
+    var gender = document.getElementById("gender").value;
+    var email = document.getElementById("signUpEmail").value.trim();
+    var password = document.getElementById("signUpPassword").value;
+
+    client.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          full_name: firstName + " " + lastName,
+          gender: gender
+        }
+      }
+    }).then(function (res) {
+      signUpBtn.disabled = false;
+      signUpBtn.textContent = "Create Account";
+
+      if (res.error) {
+        signUpError.textContent = res.error.message || "Could not create account.";
+        signUpError.classList.add("show");
+        return;
+      }
+
+      // If email confirmation is required in your Supabase project,
+      // there's no session yet — show a message instead of redirecting.
+      if (res.data && res.data.session) {
+        location.href = getRedirectTarget();
+      } else {
+        signUpForm.reset();
+        signUpSuccess.textContent = "Account created! Check your email to confirm before logging in.";
+        signUpSuccess.classList.add("show");
+      }
+    }).catch(function () {
+      signUpBtn.disabled = false;
+      signUpBtn.textContent = "Create Account";
+      signUpError.textContent = "Something went wrong. Please try again.";
+      signUpError.classList.add("show");
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
