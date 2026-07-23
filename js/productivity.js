@@ -851,6 +851,7 @@ function stopInterval(row) {
 }
 
 const pages = [
+  "../index.html",
   "productivity.html",
   "maxpenalty.html",
   "common-name.html",
