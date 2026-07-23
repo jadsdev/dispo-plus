@@ -150,7 +150,7 @@ Feel free to open an Issue or submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+See the `LICENSE` file for licensing information.
 
 ---
 
@@ -158,9 +158,8 @@ This project is licensed under the MIT License.
 
 **John Aaron Saragosala**
 
-- GitHub: https://github.com/yourusername
-- Portfolio: https://yourportfolio.com
-
+- GitHub: https://github.com/jadsdev
+- Portfolio: https://jadsdev.vercel.app
 ---
 
 ## ⭐ Support
